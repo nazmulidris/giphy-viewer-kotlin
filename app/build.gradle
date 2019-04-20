@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+  compileSdkVersion 28
+  defaultConfig {
+    applicationId "com.developerlife.giphyviewer"
+    minSdkVersion 16
+    targetSdkVersion 28
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+          'proguard-rules.pro'
+    }
+  }
+}
+
+dependencies {
+  // Giphy SDK.
+  implementation('com.giphy.sdk:core:1.0.2@aar') {
+    transitive = true
+  }
+  // Local deps.
+  implementation fileTree(include: ['*.jar'], dir: 'libs')
+  // Kotlin.
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  // AppCompat.
+  implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
+  // Material Design Components.
+  implementation 'com.google.android.material:material:1.1.0-alpha05'
+  // RecyclerView.
+  implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha04'
+  // CardView.
+  implementation 'androidx.cardview:cardview:1.0.0'
+  // ConstraintLayout.
+  implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha4'
+  // Anko.
+  implementation 'org.jetbrains.anko:anko:0.10.8'
+  // Physics based animation.
+  implementation 'androidx.dynamicanimation:dynamicanimation:1.1.0-alpha01'
+  // Android KTX.
+  implementation 'androidx.core:core-ktx:1.1.0-alpha05'
+  // SwipeRefreshLayout.
+  implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha01'
+  // [Architecture Components](http://tinyurl.com/y7rad9t4).
+  implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha04'
+  implementation 'androidx.lifecycle:lifecycle-common-java8:2.1.0-alpha04'
+  // Paginate / Infinite Scrolling..
+  implementation 'com.github.markomilos:paginate:0.5.1'
+  // Fresco.
+  implementation 'com.facebook.fresco:fresco:1.11.0'
+  implementation 'com.facebook.fresco:animated-gif:1.11.0'
+  // Android test.
+  testImplementation 'junit:junit:4.13-beta-2'
+  androidTestImplementation 'androidx.test:runner:1.2.0-alpha04'
+  androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha04'
+}
