@@ -23,13 +23,13 @@ import org.junit.Test
 class AppModeTest {
   @Test
   fun `can create Trending mode`() {
-    val mode: AppMode = AppMode.Trending();
+    val mode: AppMode = AppMode.Trending()
     assertTrue(mode is AppMode.Trending)
   }
 
   @Test
   fun `can create Search mode`() {
-    val mode: AppMode = AppMode.Search("query param");
+    val mode: AppMode = AppMode.Search("query param")
     assertTrue(mode is AppMode.Search)
     assertEquals("query param", (mode as AppMode.Search).query)
   }
@@ -37,7 +37,22 @@ class AppModeTest {
 
 class DataTest {
   @Test
-  fun addition_isCorrect() {
-    assertEquals(4, 2 + 2)
+  fun `can create Refresh event`() {
+    val event: DataEvent = DataEvent.Refresh()
+    assertTrue(event is DataEvent.Refresh)
+  }
+
+  @Test
+  fun `can create Error event`() {
+    val event: DataEvent = DataEvent.Error()
+    assertTrue(event is DataEvent.Error)
+  }
+
+  @Test
+  fun `can create GetMore event`() {
+    val newSize = 123
+    val event: DataEvent = DataEvent.GetMore(newSize)
+    assertTrue(event is DataEvent.GetMore)
+    assertEquals(newSize, (event as DataEvent.GetMore).newSize)
   }
 }
