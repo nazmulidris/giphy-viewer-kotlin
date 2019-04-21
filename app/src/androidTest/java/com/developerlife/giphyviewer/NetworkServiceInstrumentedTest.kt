@@ -60,7 +60,10 @@ class NetworkServiceInstrumentedTest {
 
     latch.await()
 
-    assertNull(results)
+    results?.run {
+      android.util.Log.d("results", results!!.size.toString())
+    }
+
     assertNotNull(results)
     assertTrue(results?.isNotEmpty() ?: false)
   }

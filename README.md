@@ -4,3 +4,4 @@
 - http://robolectric.org/getting-started/
 - http://robolectric.org/migrating/
 - https://stackoverflow.com/questions/52883747/robolectric-runtimeenvironment-application-is-deprecated-where-is-applicationpr
+- https://stackoverflow.com/a/3802487/2085356
