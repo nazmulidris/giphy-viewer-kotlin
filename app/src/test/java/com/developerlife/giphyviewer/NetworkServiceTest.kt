@@ -16,13 +16,15 @@
 
 package com.developerlife.giphyviewer
 
-sealed class AppMode {
-  class Trending : AppMode()
-  data class Search(val query: String) : AppMode()
-}
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
 
-sealed class DataEvent {
-  class Refresh : DataEvent()
-  class Error : DataEvent()
-  class GetMore(val newSize: Int) : DataEvent()
+class NetworkServiceTest {
+
+  @Test
+  fun `can create GiphyClient (using its API key)`() {
+    val client = GiphyClient()
+    Assert.assertNotNull(client)
+  }
 }
