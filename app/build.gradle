@@ -25,11 +25,8 @@ android {
   }
 }
 
+// Common deps.
 dependencies {
-  // Giphy SDK.
-  implementation('com.giphy.sdk:core:1.0.2@aar') {
-    transitive = true
-  }
   // Local deps.
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   // Kotlin.
@@ -60,8 +57,33 @@ dependencies {
   // Fresco.
   implementation 'com.facebook.fresco:fresco:1.11.0'
   implementation 'com.facebook.fresco:animated-gif:1.11.0'
+}
+
+// Giphy SDK.
+dependencies {
+  implementation('com.giphy.sdk:core:1.0.2@aar') {
+    transitive = true
+  }
+}
+
+// Android test.
+dependencies {
   // Android test.
   testImplementation 'junit:junit:4.13-beta-2'
   androidTestImplementation 'androidx.test:runner:1.2.0-alpha04'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha04'
+}
+
+// Roboelectric.
+android {
+  testOptions {
+    unitTests {
+      includeAndroidResources = true
+    }
+  }
+}
+
+dependencies {
+  testImplementation 'androidx.test:core:1.1.0'
+  testImplementation 'org.robolectric:robolectric:4.2'
 }
