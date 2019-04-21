@@ -17,13 +17,64 @@
 package com.developerlife.giphyviewer
 
 import com.giphy.sdk.core.models.Media
+import com.giphy.sdk.core.models.enums.MediaType
+import com.giphy.sdk.core.models.enums.RatingType
+import com.giphy.sdk.core.network.api.CompletionHandler
 import com.giphy.sdk.core.network.api.GPHApiClient
+import com.giphy.sdk.core.network.response.ListMediaResponse
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.debug
 
 class GiphyClient : AnkoLogger {
-  val API_KEY = "mnVttajnx9Twmgp3vFbMQa3Gvn9Rv4Hg"
-  val MAX_ITEMS_PER_REQUEST = 25
-  val client = GPHApiClient(API_KEY)
+  private val API_KEY = "mnVttajnx9Twmgp3vFbMQa3Gvn9Rv4Hg"
+  private val MAX_ITEMS_PER_REQUEST = 25
+  private val client = GPHApiClient(API_KEY)
+
+  fun makeTrendingRequest(runOnComplete: Runnable?,
+                          responseHandler: GiphyClientResponseHandler?,
+                          offset: Int?
+  ) {
+    debug {
+      "makeTrendingRequest: offset=$offset, limit: $MAX_ITEMS_PER_REQUEST"
+    }
+    client.trending(MediaType.gif,
+                    MAX_ITEMS_PER_REQUEST,
+                    offset,
+                    RatingType.g,
+                    generateHandler(responseHandler, runOnComplete))
+  }
+
+  fun makeSearchRequest(query: String?,
+                        runOnComplete: Runnable?,
+                        responseHandler: GiphyClientResponseHandler?,
+                        offset: Int?
+  ) {
+    debug {
+      "makeSearchRequest: query: $query, offset=$offset, " +
+      "limit:$MAX_ITEMS_PER_REQUEST"
+    }
+    client.search(query ?: "",
+                  MediaType.gif,
+                  MAX_ITEMS_PER_REQUEST,
+                  offset,
+                  RatingType.g,
+                  null,
+                  generateHandler(responseHandler, runOnComplete))
+  }
+
+  private fun generateHandler(responseHandler: GiphyClientResponseHandler?,
+                              runOnComplete: Runnable?
+  ): CompletionHandler<ListMediaResponse> {
+    // This code runs in the main thread.
+    return CompletionHandler { results, _ ->
+      debug { "results: $results" }
+      when {
+        results == null      -> responseHandler?.onError()
+        results.data != null -> responseHandler?.onResponse(results.data)
+      }
+      runOnComplete?.run()
+    }
+  }
 
 }
 

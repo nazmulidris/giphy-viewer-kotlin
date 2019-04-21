@@ -16,18 +16,14 @@
 
 package com.developerlife.giphyviewer
 
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
+import android.app.Application
 
-@RunWith(RobolectricTestRunner::class)
-class NetworkServiceTest : AndroidTest() {
+class MyApplication : Application() {
 
-  @Test
-  fun `can create GiphyClient (using its API key)`() {
-    val client = GiphyClient()
-    Assert.assertNotNull(client)
+  lateinit var giphyClient: GiphyClient
+
+  override fun onCreate() {
+    super.onCreate()
+    giphyClient = GiphyClient()
   }
-
 }
