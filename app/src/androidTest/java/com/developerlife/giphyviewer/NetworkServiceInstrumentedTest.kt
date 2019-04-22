@@ -44,19 +44,20 @@ class NetworkServiceInstrumentedTest {
     val latch = CountDownLatch(1)
     var results: List<Media>? = null
 
-    client.makeSearchRequest("hello",
-                             null,
-                             object : GiphyClientResponseHandler {
-                               override fun onResponse(mediaList: List<Media>) {
-                                 results = mediaList
-                                 latch.countDown()
-                               }
+    client.makeSearchRequest(
+        "hello",
+        null,
+        object : GiphyClientResponseHandler {
+          override fun onResponse(mediaList: List<Media>) {
+            results = mediaList
+            latch.countDown()
+          }
 
-                               override fun onError() {
-                                 latch.countDown()
-                               }
-                             },
-                             0)
+          override fun onError() {
+            latch.countDown()
+          }
+        },
+        0)
 
     latch.await()
 
@@ -74,18 +75,19 @@ class NetworkServiceInstrumentedTest {
     val latch = CountDownLatch(1)
     var results: List<Media>? = null
 
-    client.makeTrendingRequest(null,
-                               object : GiphyClientResponseHandler {
-                                 override fun onResponse(mediaList: List<Media>) {
-                                   results = mediaList
-                                   latch.countDown()
-                                 }
+    client.makeTrendingRequest(
+        null,
+        object : GiphyClientResponseHandler {
+          override fun onResponse(mediaList: List<Media>) {
+            results = mediaList
+            latch.countDown()
+          }
 
-                                 override fun onError() {
-                                   latch.countDown()
-                                 }
-                               },
-                               0)
+          override fun onError() {
+            latch.countDown()
+          }
+        },
+        0)
 
     latch.await()
 
