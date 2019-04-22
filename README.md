@@ -1,7 +1,8 @@
 # Design
 
 - **MyApplication.kt** is the custom Application class that acts as a 
-dependency injection component that provides objects to the app.
+dependency injection component that provides various objects that are needed 
+in various places throughout the app.
 
 - **State.kt** contains sealed classes that represent various events and state
 representations that are used throughout the app.
@@ -26,7 +27,7 @@ the network.
 ## Roboelectric (and unit tests)
 - http://robolectric.org/getting-started/
 - http://robolectric.org/migrating/
-- https://stackoverflow.com/questions/52883747/robolectric-runtimeenvironment-application-is-deprecated-where-is-applicationpr
+- https://stackoverflow.com/a/52923630/2085356
 
 ## Testing async code in tests
 - https://stackoverflow.com/a/3802487/2085356
