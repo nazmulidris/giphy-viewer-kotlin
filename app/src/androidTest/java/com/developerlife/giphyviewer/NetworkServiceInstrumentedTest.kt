@@ -35,7 +35,8 @@ class NetworkServiceInstrumentedTest {
   fun useAppContext() {
     // Context of the app under test.
     val appContext = InstrumentationRegistry.getTargetContext()
-    assertEquals("com.developerlife.giphyviewer", appContext.packageName)
+    val packageName = "com.developerlife.giphyviewer"
+    assertEquals(packageName, appContext.packageName)
   }
 
   @Test
