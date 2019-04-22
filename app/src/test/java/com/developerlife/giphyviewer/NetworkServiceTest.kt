@@ -16,18 +16,46 @@
 
 package com.developerlife.giphyviewer
 
+import android.app.Application
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+import java.io.File
 
-@RunWith(RobolectricTestRunner::class)
 class NetworkServiceTest : AndroidTest() {
-
   @Test
   fun `can create GiphyClient (using its API key)`() {
     val client = GiphyClient()
     Assert.assertNotNull(client)
   }
+}
 
+/**
+ * Base class for Robolectric data layer tests. Inherit from this class to
+ * create a test.
+ * More info:
+ * - https://fernandocejas.com/2017/02/03/android-testing-with-kotlin/
+ * - http://robolectric.org/androidx_test/
+ * - https://stackoverflow.com/a/52923630/2085356
+ * - http://robolectric.org/migrating/
+ */
+@RunWith(RobolectricTestRunner::class)
+@Config(
+    application = AndroidTest.ApplicationStub::class,
+    sdk = intArrayOf(28)
+)
+abstract class AndroidTest {
+  fun context(): Context {
+    return ApplicationProvider.getApplicationContext()
+  }
+
+  fun cacheDir(): File {
+    return context().cacheDir
+  }
+
+  internal class ApplicationStub : Application()
 }
