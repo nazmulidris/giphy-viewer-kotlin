@@ -45,7 +45,7 @@ class NetworkServiceInstrumentedTest {
     var results: List<Media>? = null
 
     client.makeSearchRequest("hello",
-                             Runnable { },
+                             null,
                              object : GiphyClientResponseHandler {
                                override fun onResponse(mediaList: List<Media>) {
                                  results = mediaList
@@ -61,7 +61,36 @@ class NetworkServiceInstrumentedTest {
     latch.await()
 
     results?.run {
-      android.util.Log.d("results", results!!.size.toString())
+      android.util.Log.d("search results", results!!.size.toString())
+    }
+
+    assertNotNull(results)
+    assertTrue(results?.isNotEmpty() ?: false)
+  }
+
+  @Test
+  fun canMakeTrendingRequest() {
+    val client = GiphyClient()
+    val latch = CountDownLatch(1)
+    var results: List<Media>? = null
+
+    client.makeTrendingRequest(null,
+                               object : GiphyClientResponseHandler {
+                                 override fun onResponse(mediaList: List<Media>) {
+                                   results = mediaList
+                                   latch.countDown()
+                                 }
+
+                                 override fun onError() {
+                                   latch.countDown()
+                                 }
+                               },
+                               0)
+
+    latch.await()
+
+    results?.run {
+      android.util.Log.d("trending results", results!!.size.toString())
     }
 
     assertNotNull(results)
