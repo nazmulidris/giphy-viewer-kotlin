@@ -1,3 +1,20 @@
+# Design
+
+- **MyApplication.kt** is the custom Application class that acts as a 
+dependency injection component that provides objects to the app.
+
+- **State.kt** contains sealed classes that represent various events and state
+representations that are used throughout the app.
+
+- **NetworkService.kt** contains the classes that connect to web services to
+load data over the network (GiphyClient SDK).
+
+- **Unit tests (test/)** test classes in State.kt and some functions in
+NetworkService.
+
+- **Integration tests (androidTest/)** test classes in NetworkService.kt over
+the network.
+
 # References
 
 ## Anko logging
