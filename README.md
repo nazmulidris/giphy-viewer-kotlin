@@ -11,7 +11,7 @@ representations that are used throughout the app.
 load data over the network (GiphyClient SDK).
 
 - **Unit tests (test/)** test classes in State.kt and some functions in
-NetworkService.
+NetworkService (using Roboelectric).
 
 - **Integration tests (androidTest/)** test classes in NetworkService.kt over
 the network.
