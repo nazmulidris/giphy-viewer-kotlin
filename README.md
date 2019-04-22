@@ -31,7 +31,7 @@ the network.
 ## Testing async code in tests
 - https://stackoverflow.com/a/3802487/2085356
 
-## Removing deprecations from `androidTestImplementation`
+## Removing deprecations from androidTestImplementation
 - https://stackoverflow.com/a/52776938/2085356
 - https://stackoverflow.com/a/52932361/2085356
 
