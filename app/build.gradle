@@ -6,7 +6,7 @@ android {
   compileSdkVersion 28
   defaultConfig {
     applicationId "com.developerlife.giphyviewer"
-    minSdkVersion 16
+    minSdkVersion 18
     targetSdkVersion 28
     versionCode 1
     versionName "1.0"
@@ -59,20 +59,13 @@ dependencies {
   implementation 'com.facebook.fresco:animated-gif:1.11.0'
 }
 
-// Android test.
+// Android unit test.
 dependencies {
-  // Android test.
   testImplementation 'junit:junit:4.13-beta-2'
-  androidTestImplementation 'androidx.test:runner:1.2.0-alpha04'
-  androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha04'
+  testImplementation 'org.assertj:assertj-core:3.11.1'
 }
 
-// AssertJ.
-dependencies {
-  testImplementation 'org.assertj:assertj-core:3.6.2'
-}
-
-// Roboelectric.
+// Roboelectric (unit tests).
 android {
   testOptions {
     unitTests {
@@ -83,6 +76,19 @@ android {
 dependencies {
   testImplementation 'androidx.test:core:1.1.0'
   testImplementation 'org.robolectric:robolectric:4.2'
+}
+
+// Android instrumented test.
+dependencies {
+  androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+  androidTestImplementation 'androidx.test:runner:1.1.1'
+  androidTestImplementation 'androidx.test:rules:1.1.1'
+  // AssertJ library
+  androidTestImplementation 'org.assertj:assertj-core:3.11.1'
+  // Optional -- UI testing with Espresso
+  androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+  // Optional -- UI testing with UI Automator
+  androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
 
 // Giphy Android SDK.

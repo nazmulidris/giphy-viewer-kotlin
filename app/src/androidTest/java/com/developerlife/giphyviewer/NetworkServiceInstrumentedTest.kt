@@ -16,10 +16,12 @@
 
 package com.developerlife.giphyviewer
 
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.giphy.sdk.core.models.Media
-import org.junit.Assert.*
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
@@ -34,7 +36,7 @@ class NetworkServiceInstrumentedTest {
   @Test
   fun useAppContext() {
     // Context of the app under test.
-    val appContext = InstrumentationRegistry.getTargetContext()
+    val appContext = ApplicationProvider.getApplicationContext<Context>()
     val packageName = "com.developerlife.giphyviewer"
     assertEquals(packageName, appContext.packageName)
   }
@@ -66,8 +68,8 @@ class NetworkServiceInstrumentedTest {
       android.util.Log.d("search results", results!!.size.toString())
     }
 
-    assertNotNull(results)
-    assertTrue(results?.isNotEmpty() ?: false)
+    assertThat(results).isNotNull
+    assertThat(results).isNotEmpty
   }
 
   @Test
@@ -96,8 +98,8 @@ class NetworkServiceInstrumentedTest {
       android.util.Log.d("trending results", results!!.size.toString())
     }
 
-    assertNotNull(results)
-    assertTrue(results?.isNotEmpty() ?: false)
+    assertThat(results).isNotNull
+    assertThat(results).isNotEmpty
   }
 
 }
