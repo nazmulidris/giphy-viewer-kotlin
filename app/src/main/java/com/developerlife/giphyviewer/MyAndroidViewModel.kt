@@ -35,7 +35,7 @@ class MyAndroidViewModel(application: Application) :
     }
   }
 
-  fun setTrendingMode() = {
+  fun setTrendingMode() {
     appMode.value = AppMode.Trending()
   }
 
