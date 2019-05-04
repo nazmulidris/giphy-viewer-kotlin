@@ -21,7 +21,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.giphy.sdk.core.models.Media
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
@@ -38,7 +37,7 @@ class NetworkServiceInstrumentedTest {
     // Context of the app under test.
     val appContext = ApplicationProvider.getApplicationContext<Context>()
     val packageName = "com.developerlife.giphyviewer"
-    assertEquals(packageName, appContext.packageName)
+    assertThat(packageName).isEqualTo(appContext.packageName)
   }
 
   @Test
