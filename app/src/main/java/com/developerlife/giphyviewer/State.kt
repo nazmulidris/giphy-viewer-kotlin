@@ -16,11 +16,16 @@
 
 package com.developerlife.giphyviewer
 
+/** User interaction causes a mode to be created and set on the UI. */
 sealed class AppMode {
   class Trending : AppMode()
   data class Search(val query: String) : AppMode()
 }
 
+/**
+ * GiphyClient responses result in this event being broadcast to various
+ * parts of the UI that need to respond to these underlying data model changes.
+ */
 sealed class DataEvent {
   class Refresh : DataEvent()
   class Error : DataEvent()

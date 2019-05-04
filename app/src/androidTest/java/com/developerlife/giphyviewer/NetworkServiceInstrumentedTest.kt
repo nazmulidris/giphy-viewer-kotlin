@@ -46,8 +46,8 @@ class NetworkServiceInstrumentedTest {
     val latch = CountDownLatch(1)
     var results: List<Media>? = null
 
-    client.makeSearchRequest(
-        "hello",
+    client.makeRequest(
+        AppMode.Search("hello"),
         null,
         object : GiphyClientResponseHandler {
           override fun onResponse(mediaList: List<Media>) {
@@ -77,7 +77,8 @@ class NetworkServiceInstrumentedTest {
     val latch = CountDownLatch(1)
     var results: List<Media>? = null
 
-    client.makeTrendingRequest(
+    client.makeRequest(
+        AppMode.Trending(),
         null,
         object : GiphyClientResponseHandler {
           override fun onResponse(mediaList: List<Media>) {
