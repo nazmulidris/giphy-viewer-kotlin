@@ -17,20 +17,30 @@
 package com.developerlife.giphyviewer
 
 import android.app.Application
-import com.facebook.drawee.backends.pipeline.Fresco
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
 
-class MyApplication : Application() , AnkoLogger{
+class MyAndroidViewModel(application: Application) :
+  AndroidViewModel(application), AnkoLogger {
 
-  lateinit var giphyClient: GiphyClient
+  /** appMode observable. */
+  val appMode = MutableLiveData<AppMode>()
 
-  override fun onCreate() {
-    super.onCreate()
-    giphyClient = GiphyClient()
-    Fresco.initialize(this)
+  init {
+    appMode.value = AppMode.Trending()
     debug {
-      "MyApplication.onCreate: create giphyClient, init Fresco"
+      "MyAndroidViewModel.init: set appMode to trending"
     }
   }
+
+  fun setTrendingMode() = {
+    appMode.value = AppMode.Trending()
+  }
+
+  fun setSearchMode(query: String) {
+    appMode.value = AppMode.Search(query)
+  }
+
 }

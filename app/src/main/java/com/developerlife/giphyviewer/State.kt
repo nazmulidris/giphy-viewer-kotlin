@@ -31,5 +31,3 @@ sealed class DataEvent {
   class Error : DataEvent()
   class GetMore(val newSize: Int) : DataEvent()
 }
-
-val TAG = "logtag"
