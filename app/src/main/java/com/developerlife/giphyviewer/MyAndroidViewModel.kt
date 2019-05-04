@@ -19,14 +19,23 @@ package com.developerlife.giphyviewer
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.giphy.sdk.core.models.Media
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MyAndroidViewModel(application: Application) :
   AndroidViewModel(application), AnkoLogger {
 
-  /** appMode observable. */
+  /** Current scrolled position of RecyclerView. */
+  var position = 0
+
+  /** AppMode observable. */
   val appMode = MutableLiveData<AppMode>()
+
+  /** DataEvent observable */
+  val dataEvent = MutableLiveData<DataEvent>()
 
   init {
     appMode.value = AppMode.Trending()
@@ -35,12 +44,30 @@ class MyAndroidViewModel(application: Application) :
     }
   }
 
+  // Change app modes.
+
   fun setTrendingMode() {
     appMode.value = AppMode.Trending()
   }
 
   fun setSearchMode(query: String) {
     appMode.value = AppMode.Search(query)
+  }
+
+  // Underlying data storage and getter.
+
+  val underlyingData_ = ArrayList<Media>()
+  val data: List<Media>
+    get() = Collections.unmodifiableList(underlyingData_)
+
+  // Methods called from UI that generate network service requests.
+
+  fun requestRefreshData(runOnRefreshComplete: Runnable?) {
+    // TODO migrate requestRefreshData & resetData
+  }
+
+  fun requestMoreData() {
+    // TODO migrate requestMoreData & updateData
   }
 
 }
