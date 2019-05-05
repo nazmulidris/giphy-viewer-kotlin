@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.developerlife.giphyviewer
+package instrumentedTests
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.developerlife.giphyviewer.AppMode
+import com.developerlife.giphyviewer.GiphyClient
+import com.developerlife.giphyviewer.GiphyClientResponseHandler
 import com.giphy.sdk.core.models.Media
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -31,14 +32,7 @@ import java.util.concurrent.CountDownLatch
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
-class NetworkServiceInstrumentedTest {
-  @Test
-  fun useAppContext() {
-    // Context of the app under test.
-    val appContext = ApplicationProvider.getApplicationContext<Context>()
-    val packageName = "com.developerlife.giphyviewer"
-    assertThat(packageName).isEqualTo(appContext.packageName)
-  }
+class NetworkService {
 
   @Test
   fun canMakeSearchRequest() {

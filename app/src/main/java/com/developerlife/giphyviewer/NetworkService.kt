@@ -31,20 +31,20 @@ class GiphyClient : AnkoLogger {
   private val client = GPHApiClient(API_KEY)
 
   fun makeRequest(appMode: AppMode,
-                  runOnComplete: Runnable?,
-                  responseHandler: GiphyClientResponseHandler?,
-                  offset: Int?
+                  runOnComplete: Runnable? = null,
+                  responseHandler: GiphyClientResponseHandler,
+                  offset: Int? = null
   ) {
 
-    fun generateHandler(responseHandler: GiphyClientResponseHandler?,
+    fun generateHandler(responseHandler: GiphyClientResponseHandler,
                         runOnComplete: Runnable?
     ): CompletionHandler<ListMediaResponse> {
       // This code runs in the main thread.
       return CompletionHandler { results, _ ->
         debug { "results: $results" }
         when {
-          results == null      -> responseHandler?.onError()
-          results.data != null -> responseHandler?.onResponse(results.data)
+          results == null      -> responseHandler.onError()
+          results.data != null -> responseHandler.onResponse(results.data)
         }
         runOnComplete?.run()
       }

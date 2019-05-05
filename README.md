@@ -18,6 +18,12 @@
 
 # References
 
+## ViewModel testing, MockK, Espresso (AndroidJUnit4)
+- https://mockk.io/ANDROID.html
+- https://medium.com/@marco_cattaneo/unit-testing-with-mockito-on-kotlin-android-project-with-architecture-components-2059eb637912
+- https://blog.kotlin-academy.com/mocking-is-not-rocket-science-mockk-features-e5d55d735a98
+- https://medium.com/mindorks/android-testing-part-1-espresso-basics-7219b86c862b
+
 ## Kotlin object expressions and declarations
 
 - https://kotlinlang.org/docs/reference/object-declarations.html#object-expressions

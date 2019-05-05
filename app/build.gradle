@@ -6,7 +6,7 @@ android {
   compileSdkVersion 28
   defaultConfig {
     applicationId "com.developerlife.giphyviewer"
-    minSdkVersion 18
+    minSdkVersion 26
     targetSdkVersion 28
     versionCode 1
     versionName "1.0"
@@ -89,6 +89,12 @@ dependencies {
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
   // Optional -- UI testing with UI Automator
   androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+}
+
+// MockK for unit and instrumented tests.
+dependencies {
+  testImplementation "io.mockk:mockk-android:1.9.3.kotlin12"
+  androidTestImplementation "io.mockk:mockk-android:1.9.3.kotlin12"
 }
 
 // Giphy Android SDK.

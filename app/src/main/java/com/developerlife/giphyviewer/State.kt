@@ -16,10 +16,12 @@
 
 package com.developerlife.giphyviewer
 
+import java.util.*
+
 /** User interaction causes a mode to be created and set on the UI. */
 sealed class AppMode {
-  class Trending : AppMode()
-  data class Search(val query: String) : AppMode()
+  data class Trending(val timestamp: Date = Date()) : AppMode()
+  data class Search(val query: String, val timestamp: Date = Date()) : AppMode()
 }
 
 /**
@@ -27,7 +29,7 @@ sealed class AppMode {
  * parts of the UI that need to respond to these underlying data model changes.
  */
 sealed class DataEvent {
-  class Refresh : DataEvent()
-  class Error : DataEvent()
-  class GetMore(val newSize: Int) : DataEvent()
+  data class Refresh(val timestamp: Date = Date()) : DataEvent()
+  data class Error(val timestamp: Date = Date()) : DataEvent()
+  data class More(val newSize: Int, val timestamp: Date = Date()) : DataEvent()
 }

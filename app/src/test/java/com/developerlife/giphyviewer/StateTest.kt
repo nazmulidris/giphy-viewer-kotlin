@@ -51,8 +51,8 @@ class DataTest {
   @Test
   fun `can create GetMore event`() {
     val newSize = 123
-    val event: DataEvent = DataEvent.GetMore(newSize)
-    assertTrue(event is DataEvent.GetMore)
-    assertEquals(newSize, (event as DataEvent.GetMore).newSize)
+    val event: DataEvent = DataEvent.More(newSize)
+    assertTrue(event is DataEvent.More)
+    assertEquals(newSize, (event as DataEvent.More).newSize)
   }
 }
