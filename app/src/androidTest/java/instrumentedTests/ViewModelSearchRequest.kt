@@ -46,7 +46,7 @@ class ViewModelSearchRequest {
     runOnUiThread { viewModel.dataEvent.observeForever(observerFunction) }
 
     viewModel.setSearchMode("hello")
-    viewModel.requestRefreshData({ latch.countDown() })
+    viewModel.requestRefreshData { latch.countDown() }
     latch.await()
 
     runOnUiThread { viewModel.dataEvent.removeObserver(observerFunction) }
@@ -69,7 +69,7 @@ class ViewModelSearchMoreRequest {
     run {
       val latch = CountDownLatch(1)
       viewModel.setSearchMode("hello")
-      viewModel.requestRefreshData({ latch.countDown() })
+      viewModel.requestRefreshData { latch.countDown() }
     }
 
     // Make the Search More Request.

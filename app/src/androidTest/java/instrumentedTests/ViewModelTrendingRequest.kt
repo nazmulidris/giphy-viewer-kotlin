@@ -46,7 +46,7 @@ class ViewModelTrendingRequest {
     runOnUiThread { viewModel.dataEvent.observeForever(observerFunction) }
 
     viewModel.setTrendingMode()
-    viewModel.requestRefreshData({ latch.countDown() })
+    viewModel.requestRefreshData { latch.countDown() }
     latch.await()
 
     runOnUiThread { viewModel.dataEvent.removeObserver(observerFunction) }
@@ -69,7 +69,7 @@ class ViewModelTrendingMoreRequest {
     run {
       val latch = CountDownLatch(1)
       viewModel.setTrendingMode()
-      viewModel.requestRefreshData({ latch.countDown() })
+      viewModel.requestRefreshData { latch.countDown() }
     }
 
     // Make the Trending More Request.
