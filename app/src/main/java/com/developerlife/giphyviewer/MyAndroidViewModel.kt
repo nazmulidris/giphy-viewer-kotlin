@@ -33,13 +33,13 @@ class MyAndroidViewModel(application: Application) :
   var position = 0
 
   /** AppMode observable. */
-  val appMode = MutableLiveData<AppMode>()
+  val appModeObservable = MutableLiveData<AppMode>()
 
   /** DataEvent observable */
-  val dataEvent = MutableLiveData<DataEvent>()
+  val dataEventObservable = MutableLiveData<DataEvent>()
 
   init {
-    appMode.postValue(AppMode.Trending())
+    appModeObservable.postValue(AppMode.Trending())
     debug {
       "MyAndroidViewModel.init: set appMode to trending"
     }
@@ -53,11 +53,11 @@ class MyAndroidViewModel(application: Application) :
   // Change app modes.
 
   fun setTrendingMode() {
-    appMode.postValue(AppMode.Trending())
+    appModeObservable.postValue(AppMode.Trending())
   }
 
   fun setSearchMode(query: String) {
-    appMode.postValue(AppMode.Search(query))
+    appModeObservable.postValue(AppMode.Search(query))
   }
 
   // Underlying data storage and getter.
@@ -68,11 +68,14 @@ class MyAndroidViewModel(application: Application) :
 
   // Methods called from UI that generate network service requests.
 
-  fun requestRefreshData(runOnComplete: () -> Unit) {
+  fun requestRefreshData(runOnComplete: (() -> Unit)? = null) {
     getApplication<MyApplication>().giphyClient
-        .makeRequest(appMode = appMode.value!!,
-                     runOnComplete = Runnable { runOnComplete() },
+        .makeRequest(appMode = appModeObservable.value!!,
                      responseHandler = object : GiphyClientResponseHandler {
+                       override fun onComplete() {
+                         runOnComplete?.invoke()
+                       }
+
                        override fun onResponse(mediaList: List<Media>) {
                          resetData(mediaList)
                        }
@@ -83,12 +86,15 @@ class MyAndroidViewModel(application: Application) :
                      })
   }
 
-  fun requestMoreData(runOnComplete: () -> Unit) {
+  fun requestMoreData(runOnComplete: (() -> Unit)? = null) {
     getApplication<MyApplication>().giphyClient
-        .makeRequest(appMode = appMode.value!!,
+        .makeRequest(appMode = appModeObservable.value!!,
                      offset = underlyingData_.size,
-                     runOnComplete = Runnable { runOnComplete() },
                      responseHandler = object : GiphyClientResponseHandler {
+                       override fun onComplete() {
+                         runOnComplete?.invoke()
+                       }
+
                        override fun onResponse(mediaList: List<Media>) {
                          updateData(mediaList)
                        }
@@ -106,16 +112,16 @@ class MyAndroidViewModel(application: Application) :
     underlyingData_.clear()
     underlyingData_.addAll(newData)
     debug { "resetData: data size: ${underlyingData_.size}" }
-    dataEvent.postValue(DataEvent.Refresh())
+    dataEventObservable.postValue(DataEvent.Refresh())
   }
 
   private fun updateData(newData: List<Media>) {
     debug { "updateData: data size: ${underlyingData_.size}" }
-    dataEvent.postValue(DataEvent.More(newData.size))
+    dataEventObservable.postValue(DataEvent.More(newData.size))
   }
 
   private fun errorData() {
     debug { "errorData" }
-    dataEvent.postValue(DataEvent.Error())
+    dataEventObservable.postValue(DataEvent.Error())
   }
 }

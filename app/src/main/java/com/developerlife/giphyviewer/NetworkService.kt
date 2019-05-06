@@ -31,14 +31,11 @@ class GiphyClient : AnkoLogger {
   private val client = GPHApiClient(API_KEY)
 
   fun makeRequest(appMode: AppMode,
-                  runOnComplete: Runnable? = null,
                   responseHandler: GiphyClientResponseHandler,
                   offset: Int? = null
   ) {
 
-    fun generateHandler(responseHandler: GiphyClientResponseHandler,
-                        runOnComplete: Runnable?
-    ): CompletionHandler<ListMediaResponse> {
+    fun generateHandler(responseHandler: GiphyClientResponseHandler): CompletionHandler<ListMediaResponse> {
       // This code runs in the main thread.
       return CompletionHandler { results, _ ->
         debug { "results: $results" }
@@ -46,7 +43,7 @@ class GiphyClient : AnkoLogger {
           results == null      -> responseHandler.onError()
           results.data != null -> responseHandler.onResponse(results.data)
         }
-        runOnComplete?.run()
+        responseHandler.onComplete()
       }
     }
 
@@ -59,7 +56,7 @@ class GiphyClient : AnkoLogger {
                         MAX_ITEMS_PER_REQUEST,
                         offset,
                         RatingType.g,
-                        generateHandler(responseHandler, runOnComplete))
+                        generateHandler(responseHandler))
       }
       is AppMode.Search   -> {
         debug {
@@ -72,7 +69,7 @@ class GiphyClient : AnkoLogger {
                       offset,
                       RatingType.g,
                       null,
-                      generateHandler(responseHandler, runOnComplete))
+                      generateHandler(responseHandler))
       }
     }
 
@@ -83,4 +80,5 @@ class GiphyClient : AnkoLogger {
 interface GiphyClientResponseHandler {
   fun onResponse(mediaList: List<Media>)
   fun onError()
+  fun onComplete()
 }

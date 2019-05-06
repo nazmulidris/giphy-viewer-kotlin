@@ -42,16 +42,16 @@ class NetworkService {
 
     client.makeRequest(
         AppMode.Search("hello"),
-        null,
         object : GiphyClientResponseHandler {
-          override fun onResponse(mediaList: List<Media>) {
-            results = mediaList
+          override fun onComplete() {
             latch.countDown()
           }
 
-          override fun onError() {
-            latch.countDown()
+          override fun onResponse(mediaList: List<Media>) {
+            results = mediaList
           }
+
+          override fun onError() {}
         },
         0)
 
@@ -73,16 +73,16 @@ class NetworkService {
 
     client.makeRequest(
         AppMode.Trending(),
-        null,
         object : GiphyClientResponseHandler {
-          override fun onResponse(mediaList: List<Media>) {
-            results = mediaList
+          override fun onComplete() {
             latch.countDown()
           }
 
-          override fun onError() {
-            latch.countDown()
+          override fun onResponse(mediaList: List<Media>) {
+            results = mediaList
           }
+
+          override fun onError() {}
         },
         0)
 

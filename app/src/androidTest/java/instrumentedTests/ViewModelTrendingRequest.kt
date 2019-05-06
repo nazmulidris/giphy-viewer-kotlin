@@ -36,20 +36,16 @@ class ViewModelTrendingRequest {
     val viewModel = MyAndroidViewModel(appContext)
 
     val latch = CountDownLatch(2)
-
-    var dataEvent: DataEvent? = null
-    val observerFunction: (DataEvent) -> Unit = {
-      dataEvent = it
-      latch.countDown()
+    run {
+      runOnUiThread {
+        viewModel.dataEventObservable.observeForever { latch.countDown() }
+      }
+      viewModel.setTrendingMode()
+      viewModel.requestRefreshData { latch.countDown() }
     }
-
-    runOnUiThread { viewModel.dataEvent.observeForever(observerFunction) }
-
-    viewModel.setTrendingMode()
-    viewModel.requestRefreshData { latch.countDown() }
     latch.await()
 
-    runOnUiThread { viewModel.dataEvent.removeObserver(observerFunction) }
+    val dataEvent = viewModel.dataEventObservable.value
     assertThat(dataEvent).isNotNull
     assertThat(dataEvent).isInstanceOf(DataEvent.Refresh::class.java)
     println("dataEvent: $dataEvent")
@@ -67,25 +63,29 @@ class ViewModelTrendingMoreRequest {
 
     // First, make the Trending Refresh Request.
     run {
-      val latch = CountDownLatch(1)
-      viewModel.setTrendingMode()
-      viewModel.requestRefreshData { latch.countDown() }
+      val latch = CountDownLatch(2)
+      run {
+        runOnUiThread {
+          viewModel.dataEventObservable.observeForever { latch.countDown() }
+        }
+        viewModel.setTrendingMode()
+        viewModel.requestRefreshData { latch.countDown() }
+      }
+      latch.await()
     }
 
     // Make the Trending More Request.
     run {
       val latch = CountDownLatch(2)
-      var dataEvent: DataEvent? = null
-      runOnUiThread {
-        viewModel.dataEvent.observeForever {
-          dataEvent = it
-          latch.countDown()
+      run {
+        runOnUiThread {
+          viewModel.dataEventObservable.observeForever { latch.countDown() }
         }
+        viewModel.requestMoreData { latch.countDown() }
       }
-
-      viewModel.requestMoreData({ latch.countDown() })
       latch.await()
 
+      val dataEvent = viewModel.dataEventObservable.value
       assertThat(dataEvent).isNotNull
       assertThat(dataEvent).isInstanceOf(DataEvent.More::class.java)
       println("dataEvent: $dataEvent")
