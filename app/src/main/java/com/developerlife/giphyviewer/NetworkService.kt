@@ -35,7 +35,8 @@ class GiphyClient : AnkoLogger {
                   offset: Int? = null
   ) {
 
-    fun generateHandler(responseHandler: GiphyClientResponseHandler): CompletionHandler<ListMediaResponse> {
+    fun generateHandler(responseHandler: GiphyClientResponseHandler):
+        CompletionHandler<ListMediaResponse> {
       // This code runs in the main thread.
       return CompletionHandler { results, _ ->
         debug { "results: $results" }

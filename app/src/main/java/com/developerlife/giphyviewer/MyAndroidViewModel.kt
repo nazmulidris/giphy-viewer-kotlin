@@ -25,18 +25,30 @@ import org.jetbrains.anko.debug
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 class MyAndroidViewModel(application: Application) :
   AndroidViewModel(application), AnkoLogger {
+
+  // RecyclerView position.
 
   /** Current scrolled position of RecyclerView. */
   var position = 0
 
-  /** AppMode observable. */
-  val appModeObservable = MutableLiveData<AppMode>()
+  // Broadcast underlying data storage changes.
 
   /** DataEvent observable */
   val dataEventObservable = MutableLiveData<DataEvent>()
+
+  // Lifecycle hooks.
+
+  override fun onCleared() {
+    super.onCleared()
+    debug { "MyAndroidViewModel.onCleared: model is destroyed" }
+  }
+
+  // Manage app modes.
+
+  /** AppMode observable. */
+  val appModeObservable = MutableLiveData<AppMode>()
 
   init {
     appModeObservable.postValue(AppMode.Trending())
@@ -44,13 +56,6 @@ class MyAndroidViewModel(application: Application) :
       "MyAndroidViewModel.init: set appMode to trending"
     }
   }
-
-  override fun onCleared() {
-    super.onCleared()
-    debug { "MyAndroidViewModel.onCleared: model is destroyed" }
-  }
-
-  // Change app modes.
 
   fun setTrendingMode() {
     appModeObservable.postValue(AppMode.Trending())
@@ -60,7 +65,7 @@ class MyAndroidViewModel(application: Application) :
     appModeObservable.postValue(AppMode.Search(query))
   }
 
-  // Underlying data storage and getter.
+  // Underlying data storage.
 
   private val underlyingData_ = ArrayList<Media>()
   val data: List<Media>
