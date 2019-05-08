@@ -24,9 +24,10 @@
 - https://blog.kotlin-academy.com/mocking-is-not-rocket-science-mockk-features-e5d55d735a98
 - https://medium.com/mindorks/android-testing-part-1-espresso-basics-7219b86c862b
 
-## Kotlin object expressions and declarations
+## Kotlin object expressions, declarations, constructors
 
 - https://kotlinlang.org/docs/reference/object-declarations.html#object-expressions
+- https://stackoverflow.com/a/34624907/2085356
 
 ## Anko logging
 
