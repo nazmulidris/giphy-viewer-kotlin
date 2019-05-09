@@ -57,7 +57,7 @@ class MyViewModel(application: Application) :
 
   // Methods called from UI that generate network service requests.
 
-  fun requestRefreshData(runOnComplete: (() -> Unit)? = null) {
+  fun requestRefreshData(runOnComplete: Block? = null) {
     getApplication<MyApplication>().giphyClient
         .makeRequest(appMode = appMode,
                      responseHandler = object : GiphyClientResponseHandler {
@@ -75,7 +75,7 @@ class MyViewModel(application: Application) :
                      })
   }
 
-  fun requestMoreData(runOnComplete: (() -> Unit)? = null) {
+  fun requestMoreData(runOnComplete: Block? = null) {
     getApplication<MyApplication>().giphyClient
         .makeRequest(appMode = appMode,
                      offset = underlyingData_.size,

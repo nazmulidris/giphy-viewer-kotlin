@@ -33,8 +33,6 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
 import org.jetbrains.anko.find
 
-typealias MediaHandlerLambda = (Media) -> Unit
-
 private const val TRIGGER_LOADING_THRESHOLD = 2
 private const val GRID_SPAN_COUNT = 2
 
