@@ -25,7 +25,7 @@ import org.jetbrains.anko.debug
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MyAndroidViewModel(application: Application) :
+class MyViewModel(application: Application) :
   AndroidViewModel(application), AnkoLogger {
 
   // RecyclerView position.
@@ -42,28 +42,12 @@ class MyAndroidViewModel(application: Application) :
 
   override fun onCleared() {
     super.onCleared()
-    debug { "MyAndroidViewModel.onCleared: model is destroyed" }
+    debug { "MyViewModel.onCleared: model is destroyed" }
   }
 
   // Manage app modes.
 
-  /** AppMode observable. */
-  val appModeObservable = MutableLiveData<AppMode>()
-
-  init {
-    appModeObservable.postValue(AppMode.Trending())
-    debug {
-      "MyAndroidViewModel.init: set appMode to trending"
-    }
-  }
-
-  fun setTrendingMode() {
-    appModeObservable.postValue(AppMode.Trending())
-  }
-
-  fun setSearchMode(query: String) {
-    appModeObservable.postValue(AppMode.Search(query))
-  }
+  var appMode: AppMode = AppMode.Trending()
 
   // Underlying data storage.
 
@@ -75,7 +59,7 @@ class MyAndroidViewModel(application: Application) :
 
   fun requestRefreshData(runOnComplete: (() -> Unit)? = null) {
     getApplication<MyApplication>().giphyClient
-        .makeRequest(appMode = appModeObservable.value!!,
+        .makeRequest(appMode = appMode,
                      responseHandler = object : GiphyClientResponseHandler {
                        override fun onComplete() {
                          runOnComplete?.invoke()
@@ -93,7 +77,7 @@ class MyAndroidViewModel(application: Application) :
 
   fun requestMoreData(runOnComplete: (() -> Unit)? = null) {
     getApplication<MyApplication>().giphyClient
-        .makeRequest(appMode = appModeObservable.value!!,
+        .makeRequest(appMode = appMode,
                      offset = underlyingData_.size,
                      responseHandler = object : GiphyClientResponseHandler {
                        override fun onComplete() {

@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright 2018 Nazmul Idris. All rights reserved.
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2019 Nazmul Idris. All rights reserved.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -15,5 +16,5 @@
   -->
 
 <resources>
-  <color name="ic_launcher_background">#9FA8DA</color>
+  <color name="ic_launcher_background">#1B1B1B</color>
 </resources>

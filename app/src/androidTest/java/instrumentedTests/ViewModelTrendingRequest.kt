@@ -19,9 +19,10 @@ package instrumentedTests
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
+import com.developerlife.giphyviewer.AppMode
 import com.developerlife.giphyviewer.DataEvent
-import com.developerlife.giphyviewer.MyAndroidViewModel
 import com.developerlife.giphyviewer.MyApplication
+import com.developerlife.giphyviewer.MyViewModel
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,14 +34,14 @@ class ViewModelTrendingRequest {
   @Test
   fun makeRequest() {
     val appContext = ApplicationProvider.getApplicationContext<MyApplication>()
-    val viewModel = MyAndroidViewModel(appContext)
+    val viewModel = MyViewModel(appContext)
 
     val latch = CountDownLatch(2)
     run {
       runOnUiThread {
         viewModel.dataEventObservable.observeForever { latch.countDown() }
       }
-      viewModel.setTrendingMode()
+      viewModel.appMode = AppMode.Trending()
       viewModel.requestRefreshData { latch.countDown() }
     }
     latch.await()
@@ -59,7 +60,7 @@ class ViewModelTrendingMoreRequest {
   @Test
   fun makeRequest() {
     val appContext = ApplicationProvider.getApplicationContext<MyApplication>()
-    val viewModel = MyAndroidViewModel(appContext)
+    val viewModel = MyViewModel(appContext)
 
     // First, make the Trending Refresh Request.
     run {
@@ -68,7 +69,7 @@ class ViewModelTrendingMoreRequest {
         runOnUiThread {
           viewModel.dataEventObservable.observeForever { latch.countDown() }
         }
-        viewModel.setTrendingMode()
+        viewModel.appMode = AppMode.Trending()
         viewModel.requestRefreshData { latch.countDown() }
       }
       latch.await()

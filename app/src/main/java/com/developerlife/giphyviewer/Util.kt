@@ -16,23 +16,17 @@
 
 package com.developerlife.giphyviewer
 
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import org.junit.runner.RunWith
+import android.content.Context
+import android.widget.Toast
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-@RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
-  @Test
-  fun useAppContext() {
-    // Context of the app under test.
-    val appContext = InstrumentationRegistry.getTargetContext()
-    assertEquals("com.developerlife.giphyviewer", appContext.packageName)
+inline fun toast(
+    context: Context,
+    text: String = "",
+    duration: Int = Toast.LENGTH_SHORT,
+    block: Toast.() -> Unit
+) {
+  with(Toast.makeText(context, text, duration)) {
+    block()
+    show()
   }
 }

@@ -17,20 +17,26 @@
 package com.developerlife.giphyviewer
 
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.giphy.sdk.core.models.Media
 import com.paginate.Paginate
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
+import org.jetbrains.anko.find
+
+typealias MediaHandlerLambda = (Media) -> Unit
+
+private const val TRIGGER_LOADING_THRESHOLD = 2
+private const val GRID_SPAN_COUNT = 2
 
 /**
  * Creates and manages the RecyclerView that is used by the [MainActivity].
@@ -43,197 +49,162 @@ import org.jetbrains.anko.debug
  *  More info: https://stackoverflow.com/a/34624907/2085356
  */
 class RecyclerViewManager(private val activity: MainActivity,
-                          private val recyclerView: RecyclerView
+                          private val recyclerView: RecyclerView,
+                          private val appViewModel: MyViewModel =
+                              ViewModelProviders
+                                  .of(activity)
+                                  .get(MyViewModel::class.java)
 ) : AnkoLogger {
-  private val appViewModel: MyAndroidViewModel
-  private var isLoading: Boolean = false
-  private var paginate: Paginate? = null
-  private var layoutManager: StaggeredGridLayoutManager? = null
-
-  private val dataAdapter: DataAdapter by lazy {
-    val returnValue = DataAdapter(object : ItemClickListener<Media> {
-      override fun onClick(item: Media) {
-        activity.startActivity(FullScreenActivity.getIntent(activity, item))
-      }
-    })
-    recyclerView.adapter = dataAdapter
-    returnValue
+  // Create RecyclerView data adapter.
+  private val dataAdapter = DataAdapter {
+    activity.startActivity(FullScreenActivity.getIntent(activity, it))
+  }.apply {
+    recyclerView.adapter = this
   }
 
-  init {
-    this.appViewModel =
-        ViewModelProviders.of(activity).get(MyAndroidViewModel::class.java)
-    setupLiveDataObserver()
-    setupLifecycleObservers()
-    setupLayoutManager()
-  }
-
-  private fun setupLiveDataObserver() {
-    debug { "setupLiveDataObserver: " }
-    appViewModel
-        .dataEventObservable
-        .observe(
-            activity,
-            Observer { dataEvent ->
-              when (dataEvent) {
-                is DataEvent.Error   -> onErrorEvent()
-                is DataEvent.More    -> onGetMoreEvent(dataEvent.newSize)
-                is DataEvent.Refresh -> onRefreshEvent()
+  // Attach live data observer.
+  private val liveDataObserver = object : AnkoLogger {
+    init {
+      debug { "setupLiveDataObserver: " }
+      appViewModel
+          .dataEventObservable
+          .observe(
+              activity,
+              Observer { dataEvent ->
+                when (dataEvent) {
+                  is DataEvent.More    -> onGetMore(dataEvent.newSize)
+                  is DataEvent.Refresh -> onRefresh()
+                  is DataEvent.Error   -> onError()
+                }
               }
-            }
-        )
-  }
-
-  //
-  //
-  // TODO clean up code below
-  //
-  //
-
-  fun onGetMoreEvent(newDataSize: Int) {
-    debug { "onGetMoreEvent: " }
-    isLoading = false
-    val underlyingDataSize = appViewModel.data.size
-    dataAdapter
-        .notifyItemRangeInserted(
-            underlyingDataSize - newDataSize, newDataSize)
-  }
-
-  fun onRefreshEvent() {
-    Log.d(TAG, "onRefreshEvent: ")
-    setupInfiniteScrolling()
-    dataAdapter.notifyDataSetChanged()
-  }
-
-  fun onErrorEvent() {
-    Log.d(TAG, "onErrorEvent: ")
-    isLoading = false
-    Toast
-        .makeText(activity, "Network error occurred", Toast.LENGTH_LONG)
-        .show()
-  }
-
-  /**
-   * This only needs to be done once for the life of this class. Infinite
-   * scrolling only comes into play after the first set of data has been loaded.
-   */
-  fun setupInfiniteScrolling() {
-    if (paginate == null) {
-      Log.d(TAG, "setupInfiniteScrolling: setting it up ONCE")
-      val callbacks = object : Paginate.Callbacks {
-        override fun onLoadMore() {
-          Log.d(TAG, "onLoadMore: ")
-          isLoading = true
-          appViewModel.requestMoreData()
-        }
-
-        override fun isLoading(): Boolean {
-          Log.d(TAG, "isLoading: $isLoading")
-          return isLoading
-        }
-
-        /** Return false to always allow infinite scrolling  */
-        override fun hasLoadedAllItems(): Boolean {
-          return false
-        }
-      }
-      paginate = Paginate.with(recyclerView, callbacks)
-          .setLoadingTriggerThreshold(TRIGGER_LOADING_THRESHOLD)
-          .setLoadingListItemSpanSizeLookup { GRID_SPAN_COUNT }
-          .build()
+          )
     }
-    else {
-      Log.d(TAG, "setupInfiniteScrolling: already setup up")
+
+    fun onGetMore(newDataSize: Int) {
+      debug { "onGetMoreEvent: " }
+      currentlyLoadingFlag = false
+      val underlyingDataSize = appViewModel.data.size
+      dataAdapter
+          .notifyItemRangeInserted(
+              underlyingDataSize - newDataSize, newDataSize)
+    }
+
+    fun onRefresh() {
+      debug { "onRefreshEvent: " }
+      setupInfiniteScrolling()
+      dataAdapter.notifyDataSetChanged()
+    }
+
+    fun onError() {
+      debug { "onErrorEvent: " }
+      currentlyLoadingFlag = false
+      toast(context = activity) { setText("Network error occurred") }
     }
   }
 
-  private fun setupLayoutManager() {
-    layoutManager = StaggeredGridLayoutManager(
-        GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
-    layoutManager!!.gapStrategy =
-        StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
-    recyclerView.layoutManager = layoutManager
-  }
+  // Create RecyclerView layout Manager.
+  private val layoutManager: StaggeredGridLayoutManager =
+      StaggeredGridLayoutManager(GRID_SPAN_COUNT, VERTICAL)
+          .apply {
+            gapStrategy = GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+            recyclerView.layoutManager = this
+          }
 
-  // Saving/restoring list position.
-
-  private fun setupLifecycleObservers() {
+  // Handle save/restore RecyclerView position.
+  init {
     activity.lifecycle
         .addObserver(
             object : LifecycleObserver {
               @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
               fun saveListPosition() {
                 val firstVisibleItemPosition =
-                    layoutManager!!.findFirstVisibleItemPositions(null)[0]
+                    layoutManager.findFirstVisibleItemPositions(null)[0]
                 appViewModel.position = firstVisibleItemPosition
-                Log.d(TAG, "saveListPosition: $firstVisibleItemPosition")
+                debug { "saveListPosition: $firstVisibleItemPosition" }
               }
 
               @OnLifecycleEvent(Lifecycle.Event.ON_START)
               fun restoreListPosition() {
-                layoutManager!!.scrollToPosition(appViewModel.position)
-                Log.d(TAG, "restoreListPosition: " + appViewModel.position)
+                layoutManager.scrollToPosition(appViewModel.position)
+                debug { "restoreListPosition: ${appViewModel.position}" }
               }
             })
   }
 
-  private inner class DataAdapter internal constructor(
-      private val onItemClickHandler: ItemClickListener<Media>
-  ) :
-    RecyclerView.Adapter<RowViewHolder>() {
+  // Handle infinite scrolling.
+  private var currentlyLoadingFlag: Boolean = false
+  private lateinit var paginate: Paginate
 
-    override fun onCreateViewHolder(parent: ViewGroup,
+  /**
+   * This only needs to be done once for the life of this class. Infinite
+   * scrolling only comes into play after the first set of data has been loaded.
+   */
+  fun setupInfiniteScrolling() {
+    if (::paginate.isInitialized) {
+      debug { "setupInfiniteScrolling: already set up" }
+      return
+    }
+
+    debug { "setupInfiniteScrolling: set it up ONCE" }
+    val callbacks = object : Paginate.Callbacks {
+      override fun onLoadMore() {
+        debug { "onLoadMore: " }
+        currentlyLoadingFlag = true
+        appViewModel.requestMoreData()
+      }
+
+      override fun isLoading(): Boolean {
+        debug { "isLoading: $currentlyLoadingFlag" }
+        return currentlyLoadingFlag
+      }
+
+      /** Return false to always allow infinite scrolling  */
+      override fun hasLoadedAllItems(): Boolean {
+        debug { "hasLoadedAllItems: return false" }
+        return false
+      }
+    }
+    paginate = Paginate.with(recyclerView, callbacks)
+        .setLoadingTriggerThreshold(TRIGGER_LOADING_THRESHOLD)
+        .setLoadingListItemSpanSizeLookup { GRID_SPAN_COUNT }
+        .build()
+  }
+
+  private inner class DataAdapter(val mediaClickHandler: MediaHandlerLambda) :
+    RecyclerView.Adapter<RowViewHolder>() {
+    override fun onCreateViewHolder(parentView: ViewGroup,
                                     viewType: Int
     ): RowViewHolder {
-      val cellView = LayoutInflater.from(parent.context)
-          .inflate(R.layout.grid_cell, parent, false)
+      val cellView = LayoutInflater
+          .from(parentView.context)
+          .inflate(R.layout.grid_cell, parentView, false)
       return RowViewHolder(cellView)
     }
 
     override fun onBindViewHolder(holder: RowViewHolder, position: Int) {
-      holder.bindDataToView(
-          appViewModel.underlyingData[position], onItemClickHandler)
+      holder.bindDataToView(appViewModel.data[position], mediaClickHandler)
     }
 
     override fun getItemCount(): Int {
-      return appViewModel.underlyingData.size
+      return appViewModel.data.size
     }
   }
 
-  private inner class RowViewHolder(imageView: View) :
-    RecyclerView.ViewHolder(imageView) {
-
-    private val imageView: SimpleDraweeView
-
-    init {
-      this.imageView = imageView.findViewById(R.id.image_grid_cell)
+  private inner class RowViewHolder(
+      cellView: View,
+      val imageView: SimpleDraweeView = cellView.find(R.id.image_grid_cell)
+  ) : RecyclerView.ViewHolder(cellView) {
+    fun bindDataToView(data: Media, block: MediaHandlerLambda) {
+      imageView.setOnClickListener { block.invoke(data) }
+      with(data.images.fixedWidthDownsampled) {
+        imageView.apply {
+          aspectRatio = width.toFloat() / height.toFloat()
+          controller = Fresco.newDraweeControllerBuilder()
+              .setUri(Uri.parse(gifUrl))
+              .setAutoPlayAnimations(true)
+              .build()
+        }
+      }
     }
-
-    fun bindDataToView(data: Media, onItemClick: ItemClickListener<Media>) {
-      imageView.setOnClickListener { v -> onItemClick.onClick(data) }
-      val imageUri = Uri.parse(data.images.fixedWidthDownsampled.gifUrl)
-      imageView.aspectRatio =
-          data.images.fixedWidthDownsampled.width.toFloat() /
-          data.images.fixedWidthDownsampled.height.toFloat()
-      imageView.controller = Fresco.newDraweeControllerBuilder()
-          .setUri(imageUri)
-          .setAutoPlayAnimations(true)
-          .build()
-    }
-  }
-
-  internal interface ItemClickListener<T> {
-    fun onClick(item: T)
-  }
-
-  companion object {
-
-    // Infinite scrolling support.
-
-    val TRIGGER_LOADING_THRESHOLD = 2
-
-    // Layout Manager.
-
-    private val GRID_SPAN_COUNT = 2
   }
 }
