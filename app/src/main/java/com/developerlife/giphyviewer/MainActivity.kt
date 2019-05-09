@@ -33,7 +33,7 @@ import org.jetbrains.anko.find
  * The main UI of the application that contains the Toolbar, SearchView, and
  * RecyclerView.
  *
- * It creates a [AppViewModel] that is stable across orientation changes, and is
+ * It creates a [MyViewModel] that is stable across orientation changes, and is
  * only created or destroyed when:
  * 1. the user starts the app (launching it from the launcher, not just
  * switching to an already running instance),
@@ -71,11 +71,11 @@ class MainActivity : AppCompatActivity() {
     }
     else {
       /*
-       * Activity underwent an orientation change. The AppViewModel has data,
-       * but pagination isn't attached to the RecyclerView, since this only
-       * happens after the first refresh operation occurs (in the block above)
-       * when the Activity is created for the very very first time (not an
-       * orientation change driven destroy -> instantiate).
+       * Activity underwent an orientation change. The MyViewModel has data, but
+       * pagination isn't attached to the RecyclerView, since this only happens
+       * after the first refresh operation occurs (in the block above) when the
+       * Activity is created for the very very first time (not an orientation
+       * change driven destroy -> instantiate).
        */
       viewHolder.recyclerViewManager.setupInfiniteScrolling()
     }

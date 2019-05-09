@@ -39,7 +39,7 @@ private const val GRID_SPAN_COUNT = 2
 /**
  * Creates and manages the RecyclerView that is used by the [MainActivity].
  *
- *  1. It is wired via LiveData to the [AppViewModel]. It lets the RecyclerView
+ *  1. It is wired via LiveData to the [MyViewModel]. It lets the RecyclerView
  *  Adapter know when the [GiphyClient] has more data.
  *  2. The RecyclerView uses a StaggeredGridLayoutManager.
  *  3. Fresco is used for image loading.
