@@ -30,8 +30,8 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.giphy.sdk.core.models.Media
 import com.paginate.Paginate
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
 import org.jetbrains.anko.find
+import org.jetbrains.anko.info
 
 private const val TRIGGER_LOADING_THRESHOLD = 2
 private const val GRID_SPAN_COUNT = 2
@@ -53,17 +53,11 @@ class RecyclerViewManager(private val activity: MainActivity,
                                   .of(activity)
                                   .get(MyViewModel::class.java)
 ) : AnkoLogger {
-  // Create RecyclerView data adapter.
-  private val dataAdapter = DataAdapter {
-    activity.startActivity(FullScreenActivity.getIntent(activity, it))
-  }.apply {
-    recyclerView.adapter = this
-  }
-
   // Attach live data observer.
+
   private val liveDataObserver = object : AnkoLogger {
     init {
-      debug { "setupLiveDataObserver: " }
+      info { "setupLiveDataObserver: " }
       appViewModel
           .dataEventObservable
           .observe(
@@ -79,36 +73,41 @@ class RecyclerViewManager(private val activity: MainActivity,
     }
 
     fun onGetMore(newDataSize: Int) {
-      debug { "onGetMoreEvent: " }
-      currentlyLoadingFlag = false
+      info { "onGetMoreEvent: " }
+      paginateIsLoading = false
       val underlyingDataSize = appViewModel.data.size
-      dataAdapter
-          .notifyItemRangeInserted(
-              underlyingDataSize - newDataSize, newDataSize)
+      val positionStart = underlyingDataSize - newDataSize
+      info {
+        "notifyItemRangeInserted: start: $positionStart, count: $newDataSize"
+      }
+      dataAdapter.notifyItemRangeInserted(positionStart, newDataSize)
     }
 
     fun onRefresh() {
-      debug { "onRefreshEvent: " }
+      info { "onRefreshEvent: " }
       setupInfiniteScrolling()
       dataAdapter.notifyDataSetChanged()
     }
 
     fun onError() {
-      debug { "onErrorEvent: " }
-      currentlyLoadingFlag = false
+      info { "onErrorEvent: " }
+      paginateIsLoading = false
       toast(context = activity) { setText("Network error occurred") }
     }
   }
 
   // Create RecyclerView layout Manager.
+
   private val layoutManager: StaggeredGridLayoutManager =
       StaggeredGridLayoutManager(GRID_SPAN_COUNT, VERTICAL)
           .apply {
             gapStrategy = GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
             recyclerView.layoutManager = this
+            info { "RecyclerView layout set to StaggeredGridLayoutManager" }
           }
 
   // Handle save/restore RecyclerView position.
+
   init {
     activity.lifecycle
         .addObserver(
@@ -118,19 +117,32 @@ class RecyclerViewManager(private val activity: MainActivity,
                 val firstVisibleItemPosition =
                     layoutManager.findFirstVisibleItemPositions(null)[0]
                 appViewModel.position = firstVisibleItemPosition
-                debug { "saveListPosition: $firstVisibleItemPosition" }
+                info { "saveListPosition: $firstVisibleItemPosition" }
               }
 
               @OnLifecycleEvent(Lifecycle.Event.ON_START)
               fun restoreListPosition() {
                 layoutManager.scrollToPosition(appViewModel.position)
-                debug { "restoreListPosition: ${appViewModel.position}" }
+                info { "restoreListPosition: ${appViewModel.position}" }
               }
             })
   }
 
+  // Create RecyclerView data adapter.
+
+  private var dataAdapter: DataAdapter
+
+  init {
+    dataAdapter = DataAdapter {
+      activity.startActivity(FullScreenActivity.getIntent(activity, it))
+    }
+    recyclerView.adapter = dataAdapter
+    info { "RecyclerView adapter set to DataAdapter" }
+  }
+
   // Handle infinite scrolling.
-  private var currentlyLoadingFlag: Boolean = false
+
+  private var paginateIsLoading: Boolean = false
   private lateinit var paginate: Paginate
 
   /**
@@ -139,26 +151,26 @@ class RecyclerViewManager(private val activity: MainActivity,
    */
   fun setupInfiniteScrolling() {
     if (::paginate.isInitialized) {
-      debug { "setupInfiniteScrolling: already set up" }
+      info { "setupInfiniteScrolling: already set up" }
       return
     }
 
-    debug { "setupInfiniteScrolling: set it up ONCE" }
+    info { "setupInfiniteScrolling: set it up ONCE" }
     val callbacks = object : Paginate.Callbacks {
       override fun onLoadMore() {
-        debug { "onLoadMore: " }
-        currentlyLoadingFlag = true
+        info { "onLoadMore: " }
+        paginateIsLoading = true
         appViewModel.requestMoreData()
       }
 
       override fun isLoading(): Boolean {
-        debug { "isLoading: $currentlyLoadingFlag" }
-        return currentlyLoadingFlag
+        info { "isLoading: $paginateIsLoading" }
+        return paginateIsLoading
       }
 
       /** Return false to always allow infinite scrolling  */
       override fun hasLoadedAllItems(): Boolean {
-        debug { "hasLoadedAllItems: return false" }
+        info { "hasLoadedAllItems: return false" }
         return false
       }
     }
@@ -188,21 +200,20 @@ class RecyclerViewManager(private val activity: MainActivity,
     }
   }
 
-  private inner class RowViewHolder(
-      cellView: View,
-      val imageView: SimpleDraweeView = cellView.find(R.id.image_grid_cell)
+  private inner class RowViewHolder(cellView: View,
+                                    val imageView: SimpleDraweeView =
+                                        cellView.find(R.id.image_grid_cell)
   ) : RecyclerView.ViewHolder(cellView) {
     fun bindDataToView(data: Media, block: MediaHandlerLambda) {
       imageView.setOnClickListener { block.invoke(data) }
-      with(data.images.fixedWidthDownsampled) {
-        imageView.apply {
-          aspectRatio = width.toFloat() / height.toFloat()
-          controller = Fresco.newDraweeControllerBuilder()
-              .setUri(Uri.parse(gifUrl))
-              .setAutoPlayAnimations(true)
-              .build()
-        }
-      }
+      val image = data.images.fixedWidthDownsampled
+      val imageUri = Uri.parse(image.gifUrl)
+      imageView.aspectRatio = (image.width / image.height).toFloat()
+      imageView.controller = Fresco
+          .newDraweeControllerBuilder()
+          .setUri(imageUri)
+          .setAutoPlayAnimations(true)
+          .build()
     }
   }
 }

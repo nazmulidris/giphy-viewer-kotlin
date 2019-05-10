@@ -19,7 +19,7 @@ package com.developerlife.giphyviewer
 import android.app.Application
 import com.facebook.drawee.backends.pipeline.Fresco
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
+import org.jetbrains.anko.info
 
 class MyApplication : Application() , AnkoLogger{
 
@@ -29,7 +29,7 @@ class MyApplication : Application() , AnkoLogger{
     super.onCreate()
     giphyClient = GiphyClient()
     Fresco.initialize(this)
-    debug {
+    info {
       "MyApplication.onCreate: create giphyClient, init Fresco"
     }
   }

@@ -17,6 +17,8 @@
 package com.developerlife.giphyviewer
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import com.giphy.sdk.core.models.Media
 
@@ -30,6 +32,10 @@ inline fun toast(
     block()
     show()
   }
+}
+
+fun runOnUiThread(block: Block) {
+  Handler(Looper.getMainLooper()).post { block.invoke() }
 }
 
 typealias Block = () -> Unit

@@ -23,7 +23,7 @@ import com.giphy.sdk.core.network.api.CompletionHandler
 import com.giphy.sdk.core.network.api.GPHApiClient
 import com.giphy.sdk.core.network.response.ListMediaResponse
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
+import org.jetbrains.anko.info
 
 class GiphyClient : AnkoLogger {
   private val API_KEY = "mnVttajnx9Twmgp3vFbMQa3Gvn9Rv4Hg"
@@ -34,23 +34,24 @@ class GiphyClient : AnkoLogger {
                   responseHandler: GiphyClientResponseHandler,
                   offset: Int? = null
   ) {
-
     fun generateHandler(responseHandler: GiphyClientResponseHandler):
         CompletionHandler<ListMediaResponse> {
-      // This code runs in the main thread.
       return CompletionHandler { results, _ ->
-        debug { "results: $results" }
-        when {
-          results == null      -> responseHandler.onError()
-          results.data != null -> responseHandler.onResponse(results.data)
+        // This code runs in the main thread.
+        runOnUiThread {
+          info { "results: $results" }
+          when {
+            results == null      -> responseHandler.onError()
+            results.data != null -> responseHandler.onResponse(results.data)
+          }
+          responseHandler.onComplete()
         }
-        responseHandler.onComplete()
       }
     }
 
     when (appMode) {
       is AppMode.Trending -> {
-        debug {
+        info {
           "makeTrendingRequest: offset=$offset, limit: $MAX_ITEMS_PER_REQUEST"
         }
         client.trending(MediaType.gif,
@@ -60,7 +61,7 @@ class GiphyClient : AnkoLogger {
                         generateHandler(responseHandler))
       }
       is AppMode.Search   -> {
-        debug {
+        info {
           "makeSearchRequest: query: ${appMode.query}, offset=$offset, " +
           "limit:$MAX_ITEMS_PER_REQUEST"
         }

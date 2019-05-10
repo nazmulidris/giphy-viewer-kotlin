@@ -26,8 +26,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
 import org.jetbrains.anko.find
+import org.jetbrains.anko.info
 
 /**
  * The main UI of the application that contains the Toolbar, SearchView, and
@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity() {
   ) : AnkoLogger {
     init {
       searchView.setOnCloseListener {
-        debug { "onClose: clear search mode, and request refresh" }
+        info { "onClose: clear search mode, and request refresh" }
         appViewModel.appMode = AppMode.Trending()
         appViewModel.requestRefreshData(null)
         false
@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
       searchView.setOnQueryTextListener(
           object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-              debug { "onQueryTextSubmit: $query" }
+              info { "onQueryTextSubmit: $query" }
               if (!query.isEmpty()) {
                 searchMenuItem.collapseActionView()
                 appViewModel.appMode = AppMode.Search(query)

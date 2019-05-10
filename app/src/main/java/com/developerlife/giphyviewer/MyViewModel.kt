@@ -21,9 +21,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.giphy.sdk.core.models.Media
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
-import java.util.*
-import kotlin.collections.ArrayList
+import org.jetbrains.anko.info
+import java.util.concurrent.CopyOnWriteArrayList
 
 class MyViewModel(application: Application) :
   AndroidViewModel(application), AnkoLogger {
@@ -42,7 +41,7 @@ class MyViewModel(application: Application) :
 
   override fun onCleared() {
     super.onCleared()
-    debug { "MyViewModel.onCleared: model is destroyed" }
+    info { "MyViewModel.onCleared: model is destroyed" }
   }
 
   // Manage app modes.
@@ -51,9 +50,7 @@ class MyViewModel(application: Application) :
 
   // Underlying data storage.
 
-  private val underlyingData_ = ArrayList<Media>()
-  val data: List<Media>
-    get() = Collections.unmodifiableList(underlyingData_)
+  val data = CopyOnWriteArrayList<Media>()
 
   // Methods called from UI that generate network service requests.
 
@@ -78,7 +75,7 @@ class MyViewModel(application: Application) :
   fun requestMoreData(runOnComplete: Block? = null) {
     getApplication<MyApplication>().giphyClient
         .makeRequest(appMode = appMode,
-                     offset = underlyingData_.size,
+                     offset = data.size,
                      responseHandler = object : GiphyClientResponseHandler {
                        override fun onComplete() {
                          runOnComplete?.invoke()
@@ -98,19 +95,29 @@ class MyViewModel(application: Application) :
   // Methods that modify underlyingData_ and update RecyclerView.
 
   private fun resetData(newData: List<Media>) {
-    underlyingData_.clear()
-    underlyingData_.addAll(newData)
-    debug { "resetData: data size: ${underlyingData_.size}" }
-    dataEventObservable.postValue(DataEvent.Refresh())
+    data.clear()
+    data.addAll(newData)
+    info { "resetData: data size: ${data.size}" }
+    info { prettyPrint(data) }
+    dataEventObservable.value = DataEvent.Refresh()
   }
 
   private fun updateData(newData: List<Media>) {
-    debug { "updateData: data size: ${underlyingData_.size}" }
-    dataEventObservable.postValue(DataEvent.More(newData.size))
+    info { "updateData: data size: ${data.size}" }
+    info { prettyPrint(data) }
+    dataEventObservable.value = DataEvent.More(newData.size)
   }
 
   private fun errorData() {
-    debug { "errorData" }
-    dataEventObservable.postValue(DataEvent.Error())
+    info { "errorData" }
+    dataEventObservable.value = DataEvent.Error()
+  }
+
+  private fun prettyPrint(data: List<Media>): String {
+    val buffer = StringBuffer()
+    for (media in data) {
+      buffer.append("id: ${media.id}, url ${media.bitlyGifUrl}\n")
+    }
+    return buffer.toString()
   }
 }
