@@ -26,7 +26,7 @@
 - **Unit tests (test/)** test classes in State.kt and some functions in
   NetworkService (using Roboelectric).
 
-- **Integration tests (androidTest/)** test classes in NetworkService.kt over
+- **Instrumented tests (androidTest/)** test classes in NetworkService.kt over
   the network.
 
 <img 
