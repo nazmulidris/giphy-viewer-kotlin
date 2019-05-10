@@ -29,8 +29,9 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.giphy.sdk.core.models.Media
 
 /**
- * Displays a full screen animated GIF, given the URI that is passed in the Intent that creates it.
- * Fresco is used to actually load and render the animated GIF.
+ * Displays a full screen animated GIF, given the URI that is passed in the
+ * Intent that creates it. Fresco is used to actually load and render the
+ * animated GIF.
  */
 class FullScreenActivity : Activity() {
 
