@@ -20,17 +20,26 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
-import com.giphy.sdk.core.models.Media
+import androidx.core.net.toUri
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
+import java.net.URLEncoder
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 inline fun toast(
     context: Context,
     text: String = "",
     duration: Int = Toast.LENGTH_SHORT,
-    block: Toast.() -> Unit
+    crossinline block: Toast.() -> Unit
 ) {
-  with(Toast.makeText(context, text, duration)) {
-    block()
-    show()
+  runOnUiThread {
+    with(Toast.makeText(context, text, duration)) {
+      block()
+      show()
+    }
   }
 }
 
@@ -38,5 +47,42 @@ fun runOnUiThread(block: BlockLambda) {
   Handler(Looper.getMainLooper()).post { block.invoke() }
 }
 
+suspend fun shorten(longUrl: String): String {
+  return suspendCoroutine { promise ->
+    try {
+      val shortUrl = shortenUrl(longUrl)
+      promise.resume(shortUrl)
+    }
+    catch (e: Exception) {
+      promise.resume(longUrl)
+    }
+  }
+}
+
+fun shortenUrl(arg: String): String {
+  val encodedUri: String = arg.toUri().toString()
+
+  val tinyUrl = "https://tinyurl.com/api-create.php?url=${URLEncoder.encode(
+      encodedUri,
+      "UTF-8")}"
+
+  val connection = URL(tinyUrl).openConnection() as HttpURLConnection
+  connection.requestMethod = "GET"
+  val reader = BufferedReader(InputStreamReader(connection.inputStream))
+
+  val response = StringBuilder()
+
+  var line: String? = ""
+
+  while (line != null) {
+    line = reader.readLine()
+    line?.apply { response.append(this) }
+  }
+
+  reader.close()
+
+  return response.toString()
+}
+
 typealias BlockLambda = () -> Unit
-typealias MediaHandlerLambda = (Media) -> Unit
+typealias BlockWithSingleArgLambda<T> = (T) -> Unit

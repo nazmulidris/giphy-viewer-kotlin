@@ -42,8 +42,9 @@ style="width:100%;">
 - https://blog.kotlin-academy.com/mocking-is-not-rocket-science-mockk-features-e5d55d735a98
 - https://medium.com/mindorks/android-testing-part-1-espresso-basics-7219b86c862b
 
-## Kotlin object expressions, declarations, constructors, constants
+## Kotlin object expressions, declarations, constructors, constants, coroutines
 
+- https://codelabs.developers.google.com/codelabs/kotlin-coroutines
 - https://kotlinlang.org/docs/reference/object-declarations.html#object-expressions
 - https://stackoverflow.com/a/34624907/2085356
 - https://blog.egorand.me/where-do-i-put-my-constants-in-kotlin/

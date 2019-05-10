@@ -23,17 +23,21 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.giphy.sdk.core.models.Media
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.info
 
 /**
  * Displays a full screen animated GIF, given the URI that is passed in the
  * Intent that creates it. Fresco is used to actually load and render the
  * animated GIF.
  */
-class FullScreenActivity : Activity() {
+class FullScreenActivity : Activity(), AnkoLogger {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -51,15 +55,33 @@ class FullScreenActivity : Activity() {
         .setAutoPlayAnimations(true)
         .build()
 
-    copyUrlToClipboard(imageUri!!)
+    shortenUriAndCopyToClipboard(imageUri!!)
   }
 
-  private fun copyUrlToClipboard(imageUri: Uri) {
+  private fun shortenUriAndCopyToClipboard(imageUri: Uri) {
+    val longUrl = imageUri.toString()
+    GlobalScope.launch(Dispatchers.IO) {
+      lateinit var shortUrl: String
+      try {
+        shortUrl = shorten(longUrl)
+        info { "coroutine-shortUrl: $shortUrl" }
+      }
+      catch (e: Exception) {
+        shortUrl = longUrl
+        info { "coroutine-copyUrlToClipboard exception! $e" }
+      }
+      copyTextToClipboard(shortUrl)
+      toast(this@FullScreenActivity) {
+        setText("URL copied to clipboard")
+      }
+    }
+  }
+
+  private fun copyTextToClipboard(plainText: String) {
     val clipboard =
         getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip = ClipData.newPlainText(URL, imageUri.toString())
+    val clip = ClipData.newPlainText(URL, plainText)
     clipboard.primaryClip = clip
-    Toast.makeText(this, "URL copied to clipboard", Toast.LENGTH_SHORT).show()
   }
 
   companion object {

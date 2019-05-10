@@ -181,7 +181,9 @@ class RecyclerViewManager(private val activity: MainActivity,
   }
 
   // RecyclerView data adapter.
-  private inner class DataAdapter(val mediaClickHandler: MediaHandlerLambda) :
+  private inner class DataAdapter(val mediaClickHandler:
+                                  BlockWithSingleArgLambda<Media>
+  ) :
     RecyclerView.Adapter<RowViewHolder>() {
     override fun onCreateViewHolder(parentView: ViewGroup,
                                     viewType: Int
@@ -206,7 +208,7 @@ class RecyclerViewManager(private val activity: MainActivity,
       cellView: View,
       val imageView: SimpleDraweeView = cellView.find(R.id.image_grid_cell)
   ) : RecyclerView.ViewHolder(cellView) {
-    fun bindDataToView(data: Media, block: MediaHandlerLambda) {
+    fun bindDataToView(data: Media, block: BlockWithSingleArgLambda<Media>) {
       imageView.setOnClickListener { block.invoke(data) }
       val image = data.images.fixedWidthDownsampled
       val imageUri = Uri.parse(image.gifUrl)
