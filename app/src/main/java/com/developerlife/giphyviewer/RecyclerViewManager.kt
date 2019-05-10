@@ -44,7 +44,7 @@ private const val GRID_SPAN_COUNT = 2
  *  2. The RecyclerView uses a StaggeredGridLayoutManager.
  *  3. Fresco is used for image loading.
  *
- *  More info: https://stackoverflow.com/a/34624907/2085356
+ *  More info: [https://stackoverflow.com/a/34624907/2085356].
  */
 class RecyclerViewManager(private val activity: MainActivity,
                           private val recyclerView: RecyclerView,

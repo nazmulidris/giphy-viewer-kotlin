@@ -7,6 +7,19 @@
 - **State.kt** contains sealed classes that represent various events and state
   representations that are used throughout the app.
 
+- **Util.kt** contains a set of extension function expressions and typedefs that
+  are used throughout the app.
+
+- **MyViewModel.kt** contains the AndroidViewModel that holds the data that's
+  loaded from the network service, and also exposes the network service end points
+  to the rest of the app.
+
+- **RecyclerViewManager.kt** contains the RecyclerView data adapter,
+  RowViewModel implementation, and configuration w/ the
+  StaggeredGridLayoutManager. It also hooks into the ViewModel's observable to
+  react to changes in the underlying data (as a result of network service request
+  being made from various parts of the app).
+
 - **NetworkService.kt** contains the classes that connect to web services to
   load data over the network (GiphyClient SDK).
 
@@ -19,6 +32,7 @@
 # References
 
 ## ViewModel testing, MockK, Espresso (AndroidJUnit4)
+
 - https://mockk.io/ANDROID.html
 - https://medium.com/@marco_cattaneo/unit-testing-with-mockito-on-kotlin-android-project-with-architecture-components-2059eb637912
 - https://blog.kotlin-academy.com/mocking-is-not-rocket-science-mockk-features-e5d55d735a98
