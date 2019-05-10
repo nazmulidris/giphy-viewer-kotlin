@@ -8,7 +8,7 @@
   representations that are used throughout the app.
 
 - **Util.kt** contains a set of extension function expressions and typedefs that
-  are used throughout the app.
+  are used throughout the app. Coroutine functions are included here as well.
 
 - **MyViewModel.kt** contains the AndroidViewModel that holds the data that's
   loaded from the network service, and also exposes the network service end points

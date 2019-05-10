@@ -29,6 +29,13 @@ import java.net.URLEncoder
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+// Type aliases.
+
+typealias BlockLambda = () -> Unit
+typealias BlockWithSingleArgLambda<T> = (T) -> Unit
+
+// Extension functions.
+
 inline fun toast(
     context: Context,
     text: String = "",
@@ -47,6 +54,8 @@ fun runOnUiThread(block: BlockLambda) {
   Handler(Looper.getMainLooper()).post { block.invoke() }
 }
 
+// Coroutines.
+
 suspend fun shorten(longUrl: String): String {
   return suspendCoroutine { promise ->
     try {
@@ -58,6 +67,8 @@ suspend fun shorten(longUrl: String): String {
     }
   }
 }
+
+// Helper functions.
 
 fun shortenUrl(arg: String): String {
   val encodedUri: String = arg.toUri().toString()
@@ -83,6 +94,3 @@ fun shortenUrl(arg: String): String {
 
   return response.toString()
 }
-
-typealias BlockLambda = () -> Unit
-typealias BlockWithSingleArgLambda<T> = (T) -> Unit
