@@ -29,7 +29,9 @@
 - **Integration tests (androidTest/)** test classes in NetworkService.kt over
   the network.
 
-[architecture diagram]: https://raw.githubusercontent.com/nazmulidris/giphy-viewer-kotlin/master/files/arch-diagram.png "Architecture Diagram"
+<img 
+src="https://raw.githubusercontent.com/nazmulidris/giphy-viewer-kotlin/master/files/arch-diagram.png" 
+style="width:100%;">
 
 # References
 
