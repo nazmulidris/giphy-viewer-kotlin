@@ -20,7 +20,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.developerlife.giphyviewer.AppMode
-import com.developerlife.giphyviewer.DataEvent
+import com.developerlife.giphyviewer.NetworkServiceResponse
 import com.developerlife.giphyviewer.MyApplication
 import com.developerlife.giphyviewer.MyViewModel
 import org.assertj.core.api.Assertions.assertThat
@@ -39,16 +39,16 @@ class ViewModelTrendingRequest {
     val latch = CountDownLatch(2)
     run {
       runOnUiThread {
-        viewModel.dataEventObservable.observeForever { latch.countDown() }
+        viewModel.responseObservable.observeForever { latch.countDown() }
       }
       viewModel.appMode = AppMode.Trending()
       viewModel.requestRefreshData { latch.countDown() }
     }
     latch.await()
 
-    val dataEvent = viewModel.dataEventObservable.value
+    val dataEvent = viewModel.responseObservable.value
     assertThat(dataEvent).isNotNull
-    assertThat(dataEvent).isInstanceOf(DataEvent.Refresh::class.java)
+    assertThat(dataEvent).isInstanceOf(NetworkServiceResponse.Refresh::class.java)
     println("dataEvent: $dataEvent")
   }
 
@@ -67,7 +67,7 @@ class ViewModelTrendingMoreRequest {
       val latch = CountDownLatch(2)
       run {
         runOnUiThread {
-          viewModel.dataEventObservable.observeForever { latch.countDown() }
+          viewModel.responseObservable.observeForever { latch.countDown() }
         }
         viewModel.appMode = AppMode.Trending()
         viewModel.requestRefreshData { latch.countDown() }
@@ -80,15 +80,15 @@ class ViewModelTrendingMoreRequest {
       val latch = CountDownLatch(2)
       run {
         runOnUiThread {
-          viewModel.dataEventObservable.observeForever { latch.countDown() }
+          viewModel.responseObservable.observeForever { latch.countDown() }
         }
         viewModel.requestMoreData { latch.countDown() }
       }
       latch.await()
 
-      val dataEvent = viewModel.dataEventObservable.value
+      val dataEvent = viewModel.responseObservable.value
       assertThat(dataEvent).isNotNull
-      assertThat(dataEvent).isInstanceOf(DataEvent.More::class.java)
+      assertThat(dataEvent).isInstanceOf(NetworkServiceResponse.More::class.java)
       println("dataEvent: $dataEvent")
     }
 

@@ -28,8 +28,9 @@ sealed class AppMode {
  * GiphyClient responses result in this event being broadcast to various
  * parts of the UI that need to respond to these underlying data model changes.
  */
-sealed class DataEvent {
-  data class Refresh(val timestamp: Date = Date()) : DataEvent()
-  data class Error(val timestamp: Date = Date()) : DataEvent()
-  data class More(val newSize: Int, val timestamp: Date = Date()) : DataEvent()
+sealed class NetworkServiceResponse {
+  data class Refresh(val timestamp: Date = Date()) : NetworkServiceResponse()
+  data class Error(val timestamp: Date = Date()) : NetworkServiceResponse()
+  data class More(val newSize: Int, val timestamp: Date = Date()) :
+    NetworkServiceResponse()
 }

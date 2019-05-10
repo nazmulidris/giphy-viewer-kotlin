@@ -38,21 +38,21 @@ class AppModeTest {
 class DataTest {
   @Test
   fun `can create Refresh event`() {
-    val event: DataEvent = DataEvent.Refresh()
-    assertTrue(event is DataEvent.Refresh)
+    val event: NetworkServiceResponse = NetworkServiceResponse.Refresh()
+    assertTrue(event is NetworkServiceResponse.Refresh)
   }
 
   @Test
   fun `can create Error event`() {
-    val event: DataEvent = DataEvent.Error()
-    assertTrue(event is DataEvent.Error)
+    val event: NetworkServiceResponse = NetworkServiceResponse.Error()
+    assertTrue(event is NetworkServiceResponse.Error)
   }
 
   @Test
   fun `can create GetMore event`() {
     val newSize = 123
-    val event: DataEvent = DataEvent.More(newSize)
-    assertTrue(event is DataEvent.More)
-    assertEquals(newSize, (event as DataEvent.More).newSize)
+    val event: NetworkServiceResponse = NetworkServiceResponse.More(newSize)
+    assertTrue(event is NetworkServiceResponse.More)
+    assertEquals(newSize, (event as NetworkServiceResponse.More).newSize)
   }
 }

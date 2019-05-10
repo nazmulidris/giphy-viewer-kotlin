@@ -25,30 +25,16 @@ import com.giphy.sdk.core.network.response.ListMediaResponse
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 
+private const val API_KEY = "mnVttajnx9Twmgp3vFbMQa3Gvn9Rv4Hg"
+private const val MAX_ITEMS_PER_REQUEST = 25
+
 class GiphyClient : AnkoLogger {
-  private val API_KEY = "mnVttajnx9Twmgp3vFbMQa3Gvn9Rv4Hg"
-  private val MAX_ITEMS_PER_REQUEST = 25
   private val client = GPHApiClient(API_KEY)
 
   fun makeRequest(appMode: AppMode,
                   responseHandler: GiphyClientResponseHandler,
                   offset: Int? = null
   ) {
-    fun generateHandler(responseHandler: GiphyClientResponseHandler):
-        CompletionHandler<ListMediaResponse> {
-      return CompletionHandler { results, _ ->
-        // This code runs in the main thread.
-        runOnUiThread {
-          info { "results: $results" }
-          when {
-            results == null      -> responseHandler.onError()
-            results.data != null -> responseHandler.onResponse(results.data)
-          }
-          responseHandler.onComplete()
-        }
-      }
-    }
-
     when (appMode) {
       is AppMode.Trending -> {
         info {
@@ -58,7 +44,7 @@ class GiphyClient : AnkoLogger {
                         MAX_ITEMS_PER_REQUEST,
                         offset,
                         RatingType.g,
-                        generateHandler(responseHandler))
+                        generateWrapperFor(responseHandler))
       }
       is AppMode.Search   -> {
         info {
@@ -71,16 +57,29 @@ class GiphyClient : AnkoLogger {
                       offset,
                       RatingType.g,
                       null,
-                      generateHandler(responseHandler))
+                      generateWrapperFor(responseHandler))
       }
     }
-
   }
 
+  private fun generateWrapperFor(responseHandler: GiphyClientResponseHandler):
+      CompletionHandler<ListMediaResponse> {
+    return CompletionHandler { results, _ ->
+      // This code runs in the main thread.
+      runOnUiThread {
+        info { "results: $results" }
+        when {
+          results == null      -> responseHandler.onErrorResponse()
+          results.data != null -> responseHandler.onOkResponse(results.data)
+        }
+        responseHandler.onComplete()
+      }
+    }
+  }
 }
 
 interface GiphyClientResponseHandler {
-  fun onResponse(mediaList: List<Media>)
-  fun onError()
+  fun onOkResponse(mediaList: List<Media>)
+  fun onErrorResponse()
   fun onComplete()
 }

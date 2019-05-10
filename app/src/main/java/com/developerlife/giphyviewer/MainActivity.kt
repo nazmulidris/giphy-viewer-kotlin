@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
   private lateinit var appViewModel: MyViewModel
 
   // Cold start the Activity.
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
@@ -62,7 +61,6 @@ class MainActivity : AppCompatActivity() {
   }
 
   // Load fresh data into the activity.
-
   private fun loadData() {
     if (appViewModel.data.isEmpty()) {
       // Activity has no data, so perform a refresh now.
@@ -138,7 +136,7 @@ class MainActivity : AppCompatActivity() {
       searchView.setOnCloseListener {
         info { "onClose: clear search mode, and request refresh" }
         appViewModel.appMode = AppMode.Trending()
-        appViewModel.requestRefreshData(null)
+        appViewModel.requestRefreshData()
         false
       }
 
@@ -149,7 +147,7 @@ class MainActivity : AppCompatActivity() {
               if (!query.isEmpty()) {
                 searchMenuItem.collapseActionView()
                 appViewModel.appMode = AppMode.Search(query)
-                appViewModel.requestRefreshData(null)
+                appViewModel.requestRefreshData()
               }
               return false
             }

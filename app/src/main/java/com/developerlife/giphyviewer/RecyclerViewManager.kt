@@ -54,25 +54,26 @@ class RecyclerViewManager(private val activity: MainActivity,
                                   .get(MyViewModel::class.java)
 ) : AnkoLogger {
   // Attach live data observer.
-
   private val liveDataObserver = object : AnkoLogger {
     init {
       info { "setupLiveDataObserver: " }
       appViewModel
-          .dataEventObservable
+          .responseObservable
           .observe(
               activity,
-              Observer { dataEvent ->
-                when (dataEvent) {
-                  is DataEvent.More    -> onGetMore(dataEvent.newSize)
-                  is DataEvent.Refresh -> onRefresh()
-                  is DataEvent.Error   -> onError()
+              Observer { response ->
+                when (response) {
+                  is NetworkServiceResponse.More    -> moreDataResponse(
+                      response.newSize)
+                  is NetworkServiceResponse.Refresh -> refreshDataResponse()
+                  is NetworkServiceResponse.Error   -> errorResponse()
                 }
               }
           )
     }
 
-    fun onGetMore(newDataSize: Int) {
+    /** Handle response for [MyViewModel.requestMoreData] */
+    fun moreDataResponse(newDataSize: Int) {
       info { "onGetMoreEvent: " }
       paginateIsLoading = false
       val underlyingDataSize = appViewModel.data.size
@@ -83,13 +84,16 @@ class RecyclerViewManager(private val activity: MainActivity,
       dataAdapter.notifyItemRangeInserted(positionStart, newDataSize)
     }
 
-    fun onRefresh() {
+    /** Handle response for [MyViewModel.requestRefreshData] */
+    fun refreshDataResponse() {
       info { "onRefreshEvent: " }
       setupInfiniteScrolling()
       dataAdapter.notifyDataSetChanged()
     }
 
-    fun onError() {
+    /** Handle response for [MyViewModel.requestRefreshData] or
+     * [MyViewModel.requestMoreData] */
+    fun errorResponse() {
       info { "onErrorEvent: " }
       paginateIsLoading = false
       toast(context = activity) { setText("Network error occurred") }
@@ -97,7 +101,6 @@ class RecyclerViewManager(private val activity: MainActivity,
   }
 
   // Create RecyclerView layout Manager.
-
   private val layoutManager: StaggeredGridLayoutManager =
       StaggeredGridLayoutManager(GRID_SPAN_COUNT, VERTICAL)
           .apply {
@@ -107,7 +110,6 @@ class RecyclerViewManager(private val activity: MainActivity,
           }
 
   // Handle save/restore RecyclerView position.
-
   init {
     activity.lifecycle
         .addObserver(
@@ -128,8 +130,7 @@ class RecyclerViewManager(private val activity: MainActivity,
             })
   }
 
-  // Create RecyclerView data adapter.
-
+  // Create and attach RecyclerView data adapter.
   private var dataAdapter: DataAdapter
 
   init {
@@ -141,7 +142,6 @@ class RecyclerViewManager(private val activity: MainActivity,
   }
 
   // Handle infinite scrolling.
-
   private var paginateIsLoading: Boolean = false
   private lateinit var paginate: Paginate
 
@@ -180,6 +180,7 @@ class RecyclerViewManager(private val activity: MainActivity,
         .build()
   }
 
+  // RecyclerView data adapter.
   private inner class DataAdapter(val mediaClickHandler: MediaHandlerLambda) :
     RecyclerView.Adapter<RowViewHolder>() {
     override fun onCreateViewHolder(parentView: ViewGroup,
@@ -200,9 +201,10 @@ class RecyclerViewManager(private val activity: MainActivity,
     }
   }
 
-  private inner class RowViewHolder(cellView: View,
-                                    val imageView: SimpleDraweeView =
-                                        cellView.find(R.id.image_grid_cell)
+  // ViewHolder implementation.
+  private inner class RowViewHolder(
+      cellView: View,
+      val imageView: SimpleDraweeView = cellView.find(R.id.image_grid_cell)
   ) : RecyclerView.ViewHolder(cellView) {
     fun bindDataToView(data: Media, block: MediaHandlerLambda) {
       imageView.setOnClickListener { block.invoke(data) }

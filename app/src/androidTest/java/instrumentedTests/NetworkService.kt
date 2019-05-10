@@ -47,11 +47,11 @@ class NetworkService {
             latch.countDown()
           }
 
-          override fun onResponse(mediaList: List<Media>) {
+          override fun onOkResponse(mediaList: List<Media>) {
             results = mediaList
           }
 
-          override fun onError() {}
+          override fun onErrorResponse() {}
         },
         0)
 
@@ -78,11 +78,11 @@ class NetworkService {
             latch.countDown()
           }
 
-          override fun onResponse(mediaList: List<Media>) {
+          override fun onOkResponse(mediaList: List<Media>) {
             results = mediaList
           }
 
-          override fun onError() {}
+          override fun onErrorResponse() {}
         },
         0)
 

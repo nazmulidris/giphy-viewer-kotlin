@@ -34,9 +34,9 @@ inline fun toast(
   }
 }
 
-fun runOnUiThread(block: Block) {
+fun runOnUiThread(block: BlockLambda) {
   Handler(Looper.getMainLooper()).post { block.invoke() }
 }
 
-typealias Block = () -> Unit
+typealias BlockLambda = () -> Unit
 typealias MediaHandlerLambda = (Media) -> Unit
