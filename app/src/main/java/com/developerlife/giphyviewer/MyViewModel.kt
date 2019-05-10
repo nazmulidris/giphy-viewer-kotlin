@@ -103,6 +103,7 @@ class MyViewModel(application: Application) :
   }
 
   private fun updateData(newData: List<Media>) {
+    data.addAll(newData)
     info { "updateData: data size: ${data.size}" }
     info { prettyPrint(data) }
     dataEventObservable.value = DataEvent.More(newData.size)
