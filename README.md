@@ -33,6 +33,8 @@
 src="https://raw.githubusercontent.com/nazmulidris/giphy-viewer-kotlin/master/files/arch-diagram.png" 
 style="width:100%;">
 
+## Video of app in action
+
 <img
 src="https://github.com/r3bl-org/giphy-viewer-kotlin/blob/master/files/giphy.gif"
 style="width:50%;">
