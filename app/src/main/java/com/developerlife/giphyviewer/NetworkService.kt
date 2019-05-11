@@ -34,31 +34,29 @@ class GiphyClient : AnkoLogger {
   fun makeRequest(appMode: AppMode,
                   responseHandler: GiphyClientResponseHandler,
                   offset: Int? = null
-  ) {
-    when (appMode) {
-      is AppMode.Trending -> {
-        info {
-          "makeTrendingRequest: offset=$offset, limit: $MAX_ITEMS_PER_REQUEST"
-        }
-        client.trending(MediaType.gif,
-                        MAX_ITEMS_PER_REQUEST,
-                        offset,
-                        RatingType.g,
-                        generateWrapperFor(responseHandler))
+  ) = when (appMode) {
+    is AppMode.Trending -> {
+      info {
+        "makeTrendingRequest: offset=$offset, limit: $MAX_ITEMS_PER_REQUEST"
       }
-      is AppMode.Search   -> {
-        info {
-          "makeSearchRequest: query: ${appMode.query}, offset=$offset, " +
-          "limit:$MAX_ITEMS_PER_REQUEST"
-        }
-        client.search(appMode.query,
-                      MediaType.gif,
+      client.trending(MediaType.gif,
                       MAX_ITEMS_PER_REQUEST,
                       offset,
                       RatingType.g,
-                      null,
                       generateWrapperFor(responseHandler))
+    }
+    is AppMode.Search   -> {
+      info {
+        "makeSearchRequest: query: ${appMode.query}, offset=$offset, " +
+        "limit:$MAX_ITEMS_PER_REQUEST"
       }
+      client.search(appMode.query,
+                    MediaType.gif,
+                    MAX_ITEMS_PER_REQUEST,
+                    offset,
+                    RatingType.g,
+                    null,
+                    generateWrapperFor(responseHandler))
     }
   }
 
