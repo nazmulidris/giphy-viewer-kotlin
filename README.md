@@ -33,6 +33,10 @@
 src="https://raw.githubusercontent.com/nazmulidris/giphy-viewer-kotlin/master/files/arch-diagram.png" 
 style="width:100%;">
 
+<img
+src="https://github.com/r3bl-org/giphy-viewer-kotlin/blob/master/files/giphy.gif"
+style="width:50%;">
+
 # References
 
 ## ViewModel testing, MockK, Espresso (AndroidJUnit4)
