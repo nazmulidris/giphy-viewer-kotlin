@@ -1,3 +1,20 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Design](#design)
+  - [Video of app in action](#video-of-app-in-action)
+- [References](#references)
+  - [ViewModel testing, MockK, Espresso (AndroidJUnit4)](#viewmodel-testing-mockk-espresso-androidjunit4)
+  - [Kotlin object expressions, declarations, constructors, constants, coroutines](#kotlin-object-expressions-declarations-constructors-constants-coroutines)
+  - [Anko logging](#anko-logging)
+  - [Android testing overview (w/ Kotlin)](#android-testing-overview-w-kotlin)
+  - [Roboelectric (and unit tests)](#roboelectric-and-unit-tests)
+  - [Testing async code in tests](#testing-async-code-in-tests)
+  - [Removing deprecations from androidTestImplementation](#removing-deprecations-from-androidtestimplementation)
+  - [AssertJ](#assertj)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Design
 
 - **MyApplication.kt** is the custom Application class that acts as a
