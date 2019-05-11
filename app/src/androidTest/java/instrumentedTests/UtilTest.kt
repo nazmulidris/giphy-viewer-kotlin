@@ -10,28 +10,39 @@ import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.anko.doAsync
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4::class)
 class UtilTest {
 
+  val longUrl =
+      "https://en.wikipedia.org/wiki/Cache_replacement_policies#Last_in_first_out_(LIFO)"
+  val shortUrl = "http://tinyurl.com/yakt9emb"
+
   @Test
   fun canCallShortenUrlInAsyncTask() {
-    val longUrl =
-        "https://en.wikipedia.org/wiki/Cache_replacement_policies#Last_in_first_out_(LIFO)"
+    val latch = CountDownLatch(1)
+    lateinit var processedUrl: String
     doAsync {
-      val shortUrl = shortenUrl(longUrl)
-      assertThat(shortUrl).isEqualTo("http://tinyurl.com/yakt9emb")
+      processedUrl = shortenUrl(longUrl)
+      latch.countDown()
     }
+    latch.await()
+    assertThat(processedUrl).isNotEqualTo(longUrl)
+    assertThat(processedUrl).isEqualTo(shortUrl)
   }
 
   @Test
   fun canCallShortenUrlCoroutines() {
-    val longUrl =
-        "https://en.wikipedia.org/wiki/Cache_replacement_policies#Last_in_first_out_(LIFO)"
+    val latch = CountDownLatch(1)
+    lateinit var processedUrl: String
     GlobalScope.launch(Dispatchers.IO) {
-      val shortUrl = shorten(longUrl)
-      assertThat(shortUrl).isEqualTo("http://tinyurl.com/yakt9emb")
+      processedUrl = shorten(longUrl)
+      latch.countDown()
     }
+    latch.await()
+    assertThat(processedUrl).isNotEqualTo(longUrl)
+    assertThat(processedUrl).isEqualTo(shortUrl)
   }
 
 }

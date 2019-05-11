@@ -70,12 +70,11 @@ suspend fun shorten(longUrl: String): String {
 
 // Helper functions.
 
-fun shortenUrl(arg: String): String {
-  val encodedUri: String = arg.toUri().toString()
+fun shortenUrl(longUrl: String): String {
+  val encodedUri = longUrl.toUri().toString()
 
   val tinyUrl = "https://tinyurl.com/api-create.php?url=${URLEncoder.encode(
-      encodedUri,
-      "UTF-8")}"
+      encodedUri, "UTF-8")}"
 
   val connection = URL(tinyUrl).openConnection() as HttpURLConnection
   connection.requestMethod = "GET"
