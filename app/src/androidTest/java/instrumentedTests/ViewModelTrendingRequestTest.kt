@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Nazmul Idris. All rights reserved.
+ * Copyright 2019 R3BL LLC. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ package instrumentedTests
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
-import com.developerlife.giphyviewer.AppMode
-import com.developerlife.giphyviewer.NetworkServiceResponse
-import com.developerlife.giphyviewer.MyApplication
-import com.developerlife.giphyviewer.MyViewModel
+import com.r3bl.giphyviewer.AppMode
+import com.r3bl.giphyviewer.MyApplication
+import com.r3bl.giphyviewer.MyViewModel
+import com.r3bl.giphyviewer.NetworkServiceResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith

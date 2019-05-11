@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Nazmul Idris. All rights reserved.
+ * Copyright 2019 R3BL LLC. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.developerlife.giphyviewer
+package com.r3bl.giphyviewer
 
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.core.models.enums.MediaType

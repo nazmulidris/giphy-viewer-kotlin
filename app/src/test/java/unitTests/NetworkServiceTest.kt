@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Nazmul Idris. All rights reserved.
+ * Copyright 2019 R3BL LLC. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.developerlife.giphyviewer
+package unitTests
 
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.r3bl.giphyviewer.GiphyClient
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -20,13 +20,13 @@
   react to changes in the underlying data (as a result of network service request
   being made from various parts of the app).
 
-- **NetworkService.kt** contains the classes that connect to web services to
+- **NetworkServiceTest.kt** contains the classes that connect to web services to
   load data over the network (GiphyClient SDK).
 
 - **Unit tests (test/)** test classes in State.kt and some functions in
   NetworkService (using Roboelectric).
 
-- **Instrumented tests (androidTest/)** test classes in NetworkService.kt over
+- **Instrumented tests (androidTest/)** test classes in NetworkServiceTest.kt over
   the network.
 
 <img 

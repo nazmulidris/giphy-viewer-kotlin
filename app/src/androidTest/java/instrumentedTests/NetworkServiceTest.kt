@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Nazmul Idris. All rights reserved.
+ * Copyright 2019 R3BL LLC. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 package instrumentedTests
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.developerlife.giphyviewer.AppMode
-import com.developerlife.giphyviewer.GiphyClient
-import com.developerlife.giphyviewer.GiphyClientResponseHandler
 import com.giphy.sdk.core.models.Media
+import com.r3bl.giphyviewer.AppMode
+import com.r3bl.giphyviewer.GiphyClient
+import com.r3bl.giphyviewer.GiphyClientResponseHandler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,7 +32,7 @@ import java.util.concurrent.CountDownLatch
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
-class NetworkService {
+class NetworkServiceTest {
 
   @Test
   fun canMakeSearchRequest() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Nazmul Idris. All rights reserved.
+ * Copyright 2019 R3BL LLC. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package com.developerlife.giphyviewer
+package unitTests
 
+import com.r3bl.giphyviewer.AppMode
+import com.r3bl.giphyviewer.NetworkServiceResponse
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -23,13 +25,15 @@ import org.junit.Test
 class AppModeTest {
   @Test
   fun `can create Trending mode`() {
-    val mode: AppMode = AppMode.Trending()
+    val mode: AppMode =
+        AppMode.Trending()
     assertTrue(mode is AppMode.Trending)
   }
 
   @Test
   fun `can create Search mode`() {
-    val mode: AppMode = AppMode.Search("query param")
+    val mode: AppMode =
+        AppMode.Search("query param")
     assertTrue(mode is AppMode.Search)
     assertEquals("query param", (mode as AppMode.Search).query)
   }
@@ -38,20 +42,23 @@ class AppModeTest {
 class DataTest {
   @Test
   fun `can create Refresh event`() {
-    val event: NetworkServiceResponse = NetworkServiceResponse.Refresh()
+    val event: NetworkServiceResponse =
+        NetworkServiceResponse.Refresh()
     assertTrue(event is NetworkServiceResponse.Refresh)
   }
 
   @Test
   fun `can create Error event`() {
-    val event: NetworkServiceResponse = NetworkServiceResponse.Error()
+    val event: NetworkServiceResponse =
+        NetworkServiceResponse.Error()
     assertTrue(event is NetworkServiceResponse.Error)
   }
 
   @Test
   fun `can create GetMore event`() {
     val newSize = 123
-    val event: NetworkServiceResponse = NetworkServiceResponse.More(newSize)
+    val event: NetworkServiceResponse =
+        NetworkServiceResponse.More(newSize)
     assertTrue(event is NetworkServiceResponse.More)
     assertEquals(newSize, (event as NetworkServiceResponse.More).newSize)
   }
