@@ -33,6 +33,10 @@
   loaded from the network service, and also exposes the network service end points
   to the rest of the app.
 
+- **NetworkService.kt** contains the integration w/ the Giphy Android SDK. Calls
+  from the ViewModel are passed on the methods of GiphyClient, which ends up
+  making calls to the Giphy Android API.
+
 - **RecyclerViewManager.kt** contains the RecyclerView data adapter,
   RowViewModel implementation, and configuration w/ the
   StaggeredGridLayoutManager. It also hooks into the ViewModel's observable to
