@@ -73,6 +73,7 @@ style="width:50%;">
 
 ## Kotlin object expressions, declarations, constructors, constants, coroutines
 
+- https://geoffreymetais.github.io/code/coroutines/#
 - https://codelabs.developers.google.com/codelabs/kotlin-coroutines
 - https://kotlinlang.org/docs/reference/object-declarations.html#object-expressions
 - https://stackoverflow.com/a/34624907/2085356
