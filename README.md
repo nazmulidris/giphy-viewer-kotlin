@@ -17,6 +17,8 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+You can find an in-depth exploration of this project in [this blog post on developerlife.com](https://developerlife.com/2019/05/11/kotlin-vs-java/).
+
 # Design
 
 - **MyApplication.kt** is the custom Application class that acts as a
