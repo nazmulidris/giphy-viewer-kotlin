@@ -17,42 +17,38 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-You can find an in-depth exploration of this project in [this blog post on developerlife.com](https://developerlife.com/2019/05/11/kotlin-vs-java/).
+You can find an in-depth exploration of this project in
+[this blog post on developerlife.com](https://developerlife.com/2019/05/11/kotlin-vs-java/).
 
 # Design
 
-- **MyApplication.kt** is the custom Application class that acts as a
-  dependency injection component that provides various objects that are needed
-  in various places throughout the app.
+- **MyApplication.kt** is the custom Application class that acts as a dependency injection component
+  that provides various objects that are needed in various places throughout the app.
 
-- **State.kt** contains sealed classes that represent various events and state
-  representations that are used throughout the app.
+- **State.kt** contains sealed classes that represent various events and state representations that
+  are used throughout the app.
 
-- **Util.kt** contains a set of extension function expressions and typedefs that
-  are used throughout the app. Coroutine functions are included here as well.
+- **Util.kt** contains a set of extension function expressions and typedefs that are used throughout
+  the app. Coroutine functions are included here as well.
 
-- **MyViewModel.kt** contains the AndroidViewModel that holds the data that's
-  loaded from the network service, and also exposes the network service end points
-  to the rest of the app.
+- **MyViewModel.kt** contains the AndroidViewModel that holds the data that's loaded from the
+  network service, and also exposes the network service end points to the rest of the app.
 
-- **NetworkService.kt** contains the integration w/ the Giphy Android SDK. Calls
-  from the ViewModel are passed on the methods of GiphyClient, which ends up
-  making calls to the Giphy Android API.
+- **NetworkService.kt** contains the integration w/ the Giphy Android SDK. Calls from the ViewModel
+  are passed on the methods of GiphyClient, which ends up making calls to the Giphy Android API.
 
-- **RecyclerViewManager.kt** contains the RecyclerView data adapter,
-  RowViewModel implementation, and configuration w/ the
-  StaggeredGridLayoutManager. It also hooks into the ViewModel's observable to
-  react to changes in the underlying data (as a result of network service request
-  being made from various parts of the app).
+- **RecyclerViewManager.kt** contains the RecyclerView data adapter, RowViewModel implementation,
+  and configuration w/ the StaggeredGridLayoutManager. It also hooks into the ViewModel's observable
+  to react to changes in the underlying data (as a result of network service request being made from
+  various parts of the app).
 
-- **NetworkServiceTest.kt** contains the classes that connect to web services to
-  load data over the network (GiphyClient SDK).
+- **NetworkServiceTest.kt** contains the classes that connect to web services to load data over the
+  network (GiphyClient SDK).
 
-- **Unit tests (test/)** test classes in State.kt and some functions in
-  NetworkService (using Roboelectric).
+- **Unit tests (test/)** test classes in State.kt and some functions in NetworkService (using
+  Roboelectric).
 
-- **Instrumented tests (androidTest/)** test classes in NetworkServiceTest.kt over
-  the network.
+- **Instrumented tests (androidTest/)** test classes in NetworkServiceTest.kt over the network.
 
 <img src="https://raw.githubusercontent.com/nazmulidris/giphy-viewer-kotlin/main/files/arch-diagram.png" style="width:100%;"/>
 
@@ -109,18 +105,18 @@ You can find an in-depth exploration of this project in [this blog post on devel
 
 The
 [Internet Engineering Task Force (IETF) points out](https://tools.ietf.org/id/draft-knodel-terminology-00.html#rfc.section.1.1.1)
-that "Master-slave is an oppressive metaphor that will and should never become fully detached from history" as well as
-"In addition to being inappropriate and arcane, the
+that "Master-slave is an oppressive metaphor that will and should never become fully detached from
+history" as well as "In addition to being inappropriate and arcane, the
 [master-slave metaphor](https://github.com/bitkeeper-scm/bitkeeper/blob/master/doc/HOWTO.ask?WT.mc_id=-blog-scottha#L231-L232)
-is both technically and historically inaccurate." There's lots of more accurate options depending on context and it
-costs me nothing to change my vocabulary, especially if it is one less little speed bump to getting a new person excited
-about tech.
+is both technically and historically inaccurate." There's lots of more accurate options depending on
+context and it costs me nothing to change my vocabulary, especially if it is one less little speed
+bump to getting a new person excited about tech.
 
-You might say, "I'm all for not using master in master-slave technical relationships, but this is clearly an instance of
-master-copy, not master-slave"
-[but that may not be the case](https://mail.gnome.org/archives/desktop-devel-list/2019-May/msg00066.html). Turns out the
-original usage of master in Git very likely came from another version control system (BitKeeper) that explicitly had a
-notion of slave branches.
+You might say, "I'm all for not using master in master-slave technical relationships, but this is
+clearly an instance of master-copy, not master-slave"
+[but that may not be the case](https://mail.gnome.org/archives/desktop-devel-list/2019-May/msg00066.html).
+Turns out the original usage of master in Git very likely came from another version control system
+(BitKeeper) that explicitly had a notion of slave branches.
 
 - https://dev.to/lukeocodes/change-git-s-default-branch-from-master-19le
 - https://www.hanselman.com/blog/EasilyRenameYourGitDefaultBranchFromMasterToMain.aspx
